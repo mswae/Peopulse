@@ -1,21 +1,20 @@
 import pandas as pd
+import ast
 
-def get_feedback_column(csv_file) -> tuple[str | None, int] | None:
+def get_feedback_column(csv_file) -> list:
     """
-    Automatically identifies the most likely 'feedback' column in a DataFrame.
+    Automatically identifies the most likely 'feedback' column(s) in an input file (CSV).
     
     Parameters:
-    csv_file: The mess dataset.
+    csv_file: The messy dataset.
     
     Returns:
-    str: The name of the column with the highest heuristic score.
-    score: The heuristic score
+    list: The list of name of columns that reached the scoring threshold.
     """
     
     df = pd.read_csv(csv_file)
 
-    best_col = None
-    highest_score = -1
+    feedback_cols = []
 
     # target keywords for the column name
     keywords = ["feedback", "comment", "remark", "suggestion", "description", "message"]
@@ -55,8 +54,35 @@ def get_feedback_column(csv_file) -> tuple[str | None, int] | None:
             score += 10
             
         # --- Keep track of the winner ---
-        if score > highest_score:
-            highest_score = score
-            best_col = col
+        if score >= 40:
+            feedback_cols.append(col)
 
-        return best_col, highest_score
+    return feedback_cols
+
+def merge_feedback_columns(csv_file, feedback_cols) -> pd.DataFrame:
+    """
+    Merges multiple identified feedback columns into a single column.
+    
+    Parameters:
+    feedback_cols: List of identified feedback column names.
+    
+    Returns:
+    DataFrame: The DataFrame with an added 'Merged Feedback' column.
+    """
+
+    if isinstance(feedback_cols, str):
+        feedback_cols = ast.literal_eval(feedback_cols)  # Convert string representation of list back to list
+
+    if not feedback_cols:
+        raise ValueError("No feedback columns identified to merge.")
+    
+    # read the original CSV file to ensure we have the full dataset for merging
+    orig_df = pd.read_csv(csv_file)
+
+    # create a new DataFrame with only the merged feeback columns
+    new_df = pd.DataFrame()
+    
+    # Create a new column by concatenating the identified feedback columns
+    new_df['Merged Feedback'] = orig_df[feedback_cols].apply(lambda row: ' | '.join(row.dropna().astype(str)), axis=1)
+    
+    return new_df
