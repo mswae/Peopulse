@@ -1,18 +1,16 @@
 import pandas as pd
 import ast
 
-def get_feedback_column(csv_file) -> list:
+def get_feedback_column(df) -> list:
     """
     Automatically identifies the most likely 'feedback' column(s) in an input file (CSV).
     
     Parameters:
-    csv_file: The messy dataset.
+    df: The messy dataset in DataFrame format.
     
     Returns:
     list: The list of name of columns that reached the scoring threshold.
     """
-    
-    df = pd.read_csv(csv_file)
 
     feedback_cols = []
 
@@ -59,11 +57,12 @@ def get_feedback_column(csv_file) -> list:
 
     return feedback_cols
 
-def merge_feedback_columns(csv_file, feedback_cols) -> pd.DataFrame:
+def merge_feedback_columns(orig_df, feedback_cols) -> pd.DataFrame:
     """
     Merges multiple identified feedback columns into a single column.
     
     Parameters:
+    orig_df: The original DataFrame containing the identified feedback columns.
     feedback_cols: List of identified feedback column names.
     
     Returns:
@@ -75,9 +74,6 @@ def merge_feedback_columns(csv_file, feedback_cols) -> pd.DataFrame:
 
     if not feedback_cols:
         raise ValueError("No feedback columns identified to merge.")
-    
-    # read the original CSV file to ensure we have the full dataset for merging
-    orig_df = pd.read_csv(csv_file)
 
     # create a new DataFrame with only the merged feeback columns
     new_df = pd.DataFrame()
