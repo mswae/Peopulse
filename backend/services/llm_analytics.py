@@ -8,7 +8,7 @@ load_dotenv()
 # initialize anthropic client
 client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
-def analyze_lgu_feedback(feedback_df) -> dict:
+def analyze_feedback(feedback_df) -> dict:
     """
     Analyzes the feedback data using a large language model (LLM) to extract insights and trends.
     
@@ -21,6 +21,9 @@ def analyze_lgu_feedback(feedback_df) -> dict:
     
     # Convert the feedback DataFrame to a list of feedback entries
     feedback_entries = feedback_df['Merged Feedback'].tolist()
+
+    # convert the list to a large string for the LLM input
+    feedback_text = " | ".join(feedback_entries)
     
     # Prepare the prompt for the LLM
     

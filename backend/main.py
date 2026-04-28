@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import io
 from services.data_pipeline import get_feedback_column, merge_feedback_columns
-from services.llm_analytics import analyze_lgu_feedback
+from services.llm_analytics import analyze_feedback
 
 # initialize app
 app = FastAPI(
