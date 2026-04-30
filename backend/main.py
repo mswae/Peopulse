@@ -48,6 +48,10 @@ async def upload_csv(file: UploadFile = File(...)):
         # ======================================================
 
         llm_analysis_results = analyze_feedback(merged_feedback_df) # Claude returns a plain string containing JSON structure
+
+        # DEBUG: Print the raw output from the LLM to verify its structure before parsing
+        print("RAW CLAUDE OUTPUT:\n", llm_analysis_results)
+
         final_results_dict = json.loads(llm_analysis_results) # convert the JSON string to a Python dictionary
         
         return {
