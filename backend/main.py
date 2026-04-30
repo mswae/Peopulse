@@ -1,4 +1,5 @@
 import uvicorn
+import json
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
@@ -28,28 +29,36 @@ def health_check():
 @app.post("/upload-csv")
 async def upload_csv(file: UploadFile = File(...)):
 
-    if file.content_type != 'text/csv':
+    if file.content_type != "text/csv":
         raise HTTPException(status_code=400, detail="Invalid file type. Please upload a CSV file.")
     
     try:
         contents = await file.read()
-        df = pd.read_csv(io.StringIO(contents.decode('utf-8')))
+        df = pd.read_csv(io.StringIO(contents.decode("utf-8")))
         
-        # column parser and merger algorithms
+        # ======================================================
+        # call column parser and merger functions
+        # ======================================================
+
         feedback_columns = get_feedback_column(df)
         merged_feedback_df = merge_feedback_columns(df, feedback_columns)
 
-        """
-        Call the LLM Analytics function here
-        """
+        # ======================================================
+        # call LLM analytics function
+        # ======================================================
+
+        llm_analysis_results = analyze_feedback(merged_feedback_df) # Claude returns a plain string containing JSON structure
+        final_results_dict = json.loads(llm_analysis_results) # convert the JSON string to a Python dictionary
         
         return {
             "status": "success",
             "filename": file.filename,
             "rows_detected": len(df),
-            "message": "File is ready for the heuristic parser!"
+            "analysis": final_results_dict
         }
     
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="The LLM failed to return a valid JSON format.")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     

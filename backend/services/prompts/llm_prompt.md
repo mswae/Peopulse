@@ -12,7 +12,7 @@ Synthesize all the citizen feedback and provide a comprehensive analysis of the 
 
 # Output Requirements
 {{
-    "top_praises": ["1-3 full sentences showing top praises"],
-    "top_complaints": ["1-3 full sentences showing top complaints"],
+    "top_praises": ["1-3 full sentences about the top praises"],
+    "top_complaints": ["1-3 full sentences about the top complaints"],
     "actionable_recommendations": ["1-3 full sentences of actionable recommendations"]
 }}
