@@ -1,12 +1,16 @@
 import os
-import anthropic
+import json
+from openai import OpenAI
 from dotenv import load_dotenv, find_dotenv
 
 # load API keys from env file
 load_dotenv(find_dotenv())
 
-# initialize anthropic client
-client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+# initialize OpenAI client
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.environ.get("OPENROUTER_API_KEY")
+)
 
 def analyze_feedback(feedback_df) -> dict:
     """
@@ -24,7 +28,7 @@ def analyze_feedback(feedback_df) -> dict:
     # ======================================================
     
     feedback_entries = feedback_df["Merged Feedback"].tolist() # Convert the feedback DataFrame to a list of feedback entries
-    feedback_text = " | ".join(feedback_entries) # convert the list to a large string for the LLM input
+    feedback_string = " | ".join(feedback_entries) # convert the list to a large string for the LLM input
     
     # ======================================================
     # 2. Locate the prompt file
@@ -48,20 +52,43 @@ def analyze_feedback(feedback_df) -> dict:
     # ======================================================
 
     try:
-        response = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+        
+        response = client.chat.completions.create(
+            model="openrouter/owl-alpha",
             max_tokens=1000,
             temperature=0.3,
-            system=system_prompt,
             messages=[
-                {
-                    "role": "user",
-                    "content": f"Here is the raw citizen feedback:\n\n{feedback_text}"
-                }
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": f"Here is the raw citizen feedback:\n\n{feedback_string}"}
             ]
         )
 
-        return response.content[0].text
+        return response.choices[0].message.content
+        
+        """
+        # Return a hardcoded string that perfectly matches your expected JSON schema
+        # Uncomment this once you have the actual LLM integration working, to test the rest of your pipeline without making real API calls
+        mock_claude_response = """
+        {
+            "top_praises": [
+                "The new digital queuing system is helpful", 
+                "Front desk staff were highly accommodating"
+            ],
+            "top_complaints": [
+                "Ventilation in the main hall is very poor", 
+                "Waiting times for document processing exceed 2 hours"
+            ],
+            "actionable_recommendations": [
+                "Deploy portable industrial fans in the main waiting area",
+                "Open a dedicated 'Express Lane' for simple document pickups to reduce bottleneck"
+            ]
+        }
+        """
+
+        return mock_claude_response
+        """
 
     except Exception as e:
-        return f"{{'error': 'API connection failed: {str(e)}'}}"
+        error_dict = {"error": f"(llm_analytics.py) API connection failed: {str(e)}"}
+
+        return json.dumps(error_dict)
