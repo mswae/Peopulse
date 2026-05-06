@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#021069;
+  --blue:#055DCF;
+  --white:#FFFFFF;
+  --black:#000000;
+  --gray-50:#F7F8FA;
+  --gray-100:#EAECF0;
+  --gray-200:#D0D5DD;
+  --gray-400:#98A2B3;
+  --gray-600:#475467;
+  --gray-800:#1D2939;
+}
+body{font-family:'Rethink Sans',sans-serif;background:#F7F8FA;color:#1D2939;overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:#021069;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;}
+.nav-logo{display:flex;align-items:center;gap:10px;color:#fff;font-size:18px;font-weight:800;letter-spacing:-0.3px;cursor:pointer;}
+.nav-logo-icon{width:30px;height:30px;background:#055DCF;border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.nav-links{display:flex;align-items:center;gap:4px;}
+.nav-link{color:rgba(255,255,255,0.65);font-size:14px;font-weight:500;padding:8px 16px;border-radius:8px;cursor:pointer;transition:all 0.18s;}
+.nav-link:hover,.nav-link.active{color:#fff;background:rgba(255,255,255,0.1);}
+.nav-btn{background:#055DCF;color:#fff;font-family:'Rethink Sans',sans-serif;font-size:14px;font-weight:700;padding:9px 22px;border-radius:8px;border:none;cursor:pointer;transition:background 0.18s;}
+.nav-btn:hover{background:#044ab8;}
+
+/* PAGE */
+.page{display:none;padding-top:64px;min-height:100vh;}
+.page.active{display:block;animation:fadeUp 0.25s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── HERO ── */
+.hero{background:#021069;min-height:calc(100vh - 64px);display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.05) 1px,transparent 1px);background-size:48px 48px;}
+.hero-orb{position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(5,93,207,0.35) 0%,transparent 65%);top:-200px;right:-150px;pointer-events:none;}
+.hero-body{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:80px 48px 48px;}
+.hero-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);border-radius:100px;padding:6px 18px;margin-bottom:32px;}
+.hero-pill-dot{width:7px;height:7px;border-radius:50%;background:#4ADE80;}
+.hero-pill span{color:rgba(255,255,255,0.85);font-size:13px;font-weight:500;}
+h1.hero-title{font-size:68px;font-weight:800;color:#fff;line-height:1.05;letter-spacing:-2px;max-width:800px;margin-bottom:22px;}
+h1.hero-title em{font-style:normal;color:#55A0FF;}
+p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width:540px;margin-bottom:44px;}
+.hero-ctas{display:flex;gap:14px;}
+.btn-white{background:#fff;color:#021069;font-family:'Rethink Sans',sans-serif;font-size:15px;font-weight:700;padding:13px 28px;border-radius:10px;border:none;cursor:pointer;transition:all 0.18s;}
+.btn-white:hover{background:#E8F0FC;color:#021069;}
+.btn-outline{background:transparent;color:#fff;font-family:'Rethink Sans',sans-serif;font-size:15px;font-weight:600;padding:13px 28px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.35);cursor:pointer;transition:all 0.18s;}
+.btn-outline:hover{background:rgba(255,255,255,0.08);}
+.hero-preview{position:relative;z-index:2;margin:0 48px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px 16px 0 0;padding:24px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.prev-card{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:18px;}
+.prev-eyebrow{font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px;}
+.prev-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.prev-bar-bg{flex:1;height:7px;border-radius:4px;background:rgba(255,255,255,0.12);overflow:hidden;}
+.prev-bar-fill{height:100%;border-radius:4px;}
+.prev-bar-label{font-size:12px;color:rgba(255,255,255,0.55);min-width:28px;text-align:right;}
+.prev-chip{display:inline-block;background:rgba(5,93,207,0.35);border:1px solid rgba(5,93,207,0.5);border-radius:6px;padding:4px 10px;font-size:11px;color:rgba(255,255,255,0.8);margin:2px;}
+.hero-stats{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,0.1);}
+.hero-stat{text-align:center;padding:32px 16px;border-right:1px solid rgba(255,255,255,0.1);}
+.hero-stat:last-child{border-right:none;}
+.hero-stat-n{font-size:34px;font-weight:800;color:#fff;letter-spacing:-1px;}
+.hero-stat-l{font-size:13px;color:rgba(255,255,255,0.45);margin-top:4px;}
+
+/* ── LOGIN ── */
+.login-wrap{min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:40px 24px;background:#F7F8FA;}
+.login-box{display:flex;width:100%;max-width:1080px;border-radius:20px;overflow:hidden;box-shadow:0 20px 64px rgba(2,16,105,0.14);}
+.login-l{background:#021069;flex:1;padding:56px 48px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;}
+.login-l-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:36px 36px;}
+.login-l-inner{position:relative;z-index:1;}
+.login-brand{font-size:22px;font-weight:800;color:#fff;margin-bottom:52px;}
+.login-hl{font-size:42px;font-weight:800;color:#fff;line-height:1.1;letter-spacing:-1.2px;margin-bottom:16px;}
+.login-hl-sub{font-size:15px;color:rgba(255,255,255,0.55);line-height:1.65;}
+.login-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:8px;}
+.login-tag{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);border-radius:100px;padding:7px 16px;font-size:13px;color:rgba(255,255,255,0.8);}
+.login-r{background:#fff;flex:0 0 420px;padding:56px 48px;display:flex;flex-direction:column;justify-content:center;}
+.login-r-title{font-size:27px;font-weight:800;color:#021069;letter-spacing:-0.5px;margin-bottom:6px;}
+.login-r-sub{font-size:14px;color:#98A2B3;margin-bottom:36px;}
+.form-label{display:block;font-size:13px;font-weight:600;color:#475467;margin-bottom:5px;}
+.form-input{width:100%;padding:12px 14px;border:1.5px solid #EAECF0;border-radius:9px;font-family:'Rethink Sans',sans-serif;font-size:14px;color:#1D2939;outline:none;transition:border-color 0.18s;margin-bottom:18px;}
+.form-input:focus{border-color:#055DCF;}
+.form-input::placeholder{color:#D0D5DD;}
+.form-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.form-forgot{font-size:12px;color:#055DCF;font-weight:600;cursor:pointer;}
+.btn-navy{width:100%;background:#021069;color:#fff;font-family:'Rethink Sans',sans-serif;font-size:15px;font-weight:700;padding:13px;border-radius:9px;border:none;cursor:pointer;transition:background 0.18s;margin-top:4px;}
+.btn-navy:hover{background:#000;}
+.form-div{display:flex;align-items:center;gap:12px;margin:20px 0;font-size:13px;color:#D0D5DD;}
+.form-div::before,.form-div::after{content:'';flex:1;height:1px;background:#EAECF0;}
+.btn-google{width:100%;background:#fff;color:#475467;font-family:'Rethink Sans',sans-serif;font-size:14px;font-weight:600;padding:12px;border-radius:9px;border:1.5px solid #EAECF0;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:all 0.18s;}
+.btn-google:hover{border-color:#D0D5DD;background:#F7F8FA;}
+.form-signup{text-align:center;margin-top:20px;font-size:13px;color:#98A2B3;}
+.form-signup a{color:#055DCF;font-weight:700;cursor:pointer;}
+
+/* ── UPLOAD ── */
+.inner-page{padding:40px 48px;}
+.ph-eyebrow{font-size:11px;font-weight:700;color:#055DCF;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;}
+.ph-title{font-size:34px;font-weight:800;color:#021069;letter-spacing:-0.8px;margin-bottom:6px;}
+.ph-sub{font-size:14px;color:#98A2B3;margin-bottom:36px;}
+.upload-layout{display:grid;grid-template-columns:1fr 360px;gap:20px;}
+.card{background:#fff;border:1px solid #EAECF0;border-radius:14px;padding:28px;margin-bottom:16px;}
+.card-title{font-size:15px;font-weight:700;color:#021069;margin-bottom:4px;}
+.card-sub{font-size:13px;color:#98A2B3;margin-bottom:20px;}
+.dropzone{border:2px dashed #D0D5DD;border-radius:12px;padding:44px 24px;text-align:center;cursor:pointer;transition:all 0.18s;}
+.dropzone:hover,.dropzone.dz-active{border-color:#055DCF;background:#EEF4FF;}
+.dz-icon{width:48px;height:48px;background:#EEF4FF;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.dz-title{font-size:14px;font-weight:600;color:#1D2939;margin-bottom:5px;}
+.dz-sub{font-size:13px;color:#98A2B3;}
+.btn-blue{background:#055DCF;color:#fff;font-family:'Rethink Sans',sans-serif;font-size:13px;font-weight:700;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-top:14px;transition:background 0.18s;}
+.btn-blue:hover{background:#044ab8;}
+.file-prev{border:1px solid #EAECF0;border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-top:14px;background:#F7F8FA;}
+.file-prev-icon{width:34px;height:34px;background:#EEF4FF;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.file-prev-name{font-size:14px;font-weight:600;color:#1D2939;}
+.file-prev-size{font-size:12px;color:#98A2B3;}
+.file-prev-rm{margin-left:auto;color:#98A2B3;cursor:pointer;font-size:20px;line-height:1;}
+.sel-label{font-size:13px;font-weight:600;color:#475467;margin-bottom:6px;}
+.sel{width:100%;padding:10px 13px;border:1.5px solid #EAECF0;border-radius:9px;font-family:'Rethink Sans',sans-serif;font-size:14px;color:#1D2939;background:#fff;outline:none;margin-bottom:16px;}
+.sel:focus{border-color:#055DCF;}
+.opt-chip{display:inline-flex;align-items:center;gap:7px;padding:10px 16px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;margin:4px 4px 4px 0;}
+.opt-chip.on{background:#EEF4FF;color:#021069;font-weight:700;}
+.opt-chip.off{background:#F7F8FA;border:1px solid #EAECF0;color:#475467;}
+.btn-run{width:100%;background:#021069;color:#fff;font-family:'Rethink Sans',sans-serif;font-size:16px;font-weight:700;padding:15px;border-radius:12px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background 0.18s;margin-top:4px;}
+.btn-run:hover{background:#000;}
+.prog-label-row{display:flex;justify-content:space-between;margin-bottom:6px;}
+.prog-label{font-size:13px;color:#475467;}
+.prog-pct{font-size:13px;font-weight:700;color:#055DCF;}
+.prog-track{background:#EAECF0;border-radius:100px;height:6px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:100px;background:#055DCF;transition:width 0.4s;}
+.step-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.step-num{width:27px;height:27px;border-radius:50%;background:#EEF4FF;color:#055DCF;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-num.done{background:#021069;color:#fff;}
+.step-text{font-size:14px;color:#475467;}
+.fmt-chip{background:#EEF4FF;color:#021069;font-size:12px;font-weight:700;padding:5px 12px;border-radius:100px;display:inline-block;margin:3px 3px 3px 0;}
+.tip-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;}
+.tip-dot{width:5px;height:5px;border-radius:50%;background:#055DCF;flex-shrink:0;margin-top:7px;}
+.tip-text{font-size:13px;color:#475467;line-height:1.5;}
+
+/* ── OUTPUT ── */
+.output-layout{display:grid;grid-template-columns:1fr 348px;gap:20px;}
+.summary-hero{background:#021069;border-radius:14px;padding:28px;position:relative;overflow:hidden;margin-bottom:16px;}
+.summary-hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:32px 32px;}
+.s-eyebrow{font-size:10px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;position:relative;}
+.s-text{font-size:16px;line-height:1.7;color:rgba(255,255,255,0.85);position:relative;}
+.metrics-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.metric-box{background:#fff;border:1px solid #EAECF0;border-radius:12px;padding:18px;}
+.metric-lbl{font-size:11px;font-weight:700;color:#98A2B3;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;}
+.metric-val{font-size:28px;font-weight:800;letter-spacing:-1px;}
+.metric-hint{font-size:12px;color:#98A2B3;margin-top:2px;}
+.badge{display:inline-block;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:700;}
+.badge-green{background:#DCFCE7;color:#166534;}
+.badge-red{background:#FEE2E2;color:#991B1B;}
+.badge-blue{background:#EEF4FF;color:#021069;}
+.fb-item{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:10px;margin-bottom:8px;}
+.fb-item.pos{background:#F0FDF4;}
+.fb-item.neg{background:#FFF5F5;}
+.fb-dot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:2px;}
+.fb-dot.pos{background:#22C55E;color:#fff;}
+.fb-dot.neg{background:#EF4444;color:#fff;}
+.fb-text{font-size:14px;color:#475467;line-height:1.5;}
+.theme-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#F7F8FA;border-radius:8px;margin-bottom:6px;}
+.theme-name{font-size:14px;color:#475467;}
+.theme-cnt{font-size:13px;font-weight:700;color:#055DCF;}
+.cat-bar-row{margin-bottom:12px;}
+.cat-bar-top{display:flex;justify-content:space-between;margin-bottom:4px;}
+.cat-bar-lbl{font-size:13px;color:#475467;}
+.cat-bar-pct{font-size:13px;font-weight:700;}
+.cat-bar-track{background:#EAECF0;border-radius:4px;height:7px;}
+.cat-bar-fill{height:100%;border-radius:4px;}
+.btn-dark{width:100%;background:#021069;color:#fff;font-family:'Rethink Sans',sans-serif;font-size:15px;font-weight:700;padding:13px;border-radius:10px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;transition:background 0.18s;}
+.btn-dark:hover{background:#000;}
+.btn-blue-full{width:100%;background:#055DCF;color:#fff;font-family:'Rethink Sans',sans-serif;font-size:15px;font-weight:700;padding:13px;border-radius:10px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.18s;}
+.btn-blue-full:hover{background:#044ab8;}
+
+/* ── RECENT (NotebookLM-style) ── */
+.recent-page-bg{background:#111827;min-height:calc(100vh - 64px);padding:40px 48px;}
+/* top bar */
+.rec-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px;}
+.rec-tabs-wrap{display:flex;align-items:center;gap:24px;}
+.rec-tab{font-size:15px;font-weight:500;color:rgba(255,255,255,0.45);cursor:pointer;padding-bottom:4px;border-bottom:2px solid transparent;transition:all 0.18s;}
+.rec-tab.active{color:#fff;font-weight:700;border-bottom-color:#055DCF;}
+.rec-toolbar{display:flex;align-items:center;gap:10px;}
+.rec-search{display:flex;align-items:center;gap:8px;background:#1F2937;border:1px solid #374151;border-radius:9px;padding:9px 14px;}
+.rec-search input{background:transparent;border:none;outline:none;color:#fff;font-family:'Rethink Sans',sans-serif;font-size:14px;width:190px;}
+.rec-search input::placeholder{color:rgba(255,255,255,0.3);}
+.rec-view-btns{display:flex;gap:2px;background:#1F2937;border:1px solid #374151;border-radius:8px;padding:3px;}
+.rec-view-btn{width:32px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.4);transition:all 0.18s;}
+.rec-view-btn.active{background:#374151;color:#fff;}
+.rec-sort{display:flex;align-items:center;gap:6px;background:#1F2937;border:1px solid #374151;border-radius:9px;padding:8px 14px;font-size:14px;color:rgba(255,255,255,0.7);cursor:pointer;}
+.btn-create{background:#055DCF;color:#fff;font-family:'Rethink Sans',sans-serif;font-size:14px;font-weight:700;padding:10px 20px;border-radius:9px;border:none;cursor:pointer;display:flex;align-items:center;gap:7px;transition:background 0.18s;}
+.btn-create:hover{background:#044ab8;}
+/* section label */
+.sec-label{font-size:12px;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px;}
+/* notebook grid */
+.nb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:40px;}
+/* create card */
+.nb-create{border:1.5px dashed #374151;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:180px;cursor:pointer;transition:all 0.18s;background:transparent;}
+.nb-create:hover{border-color:#055DCF;background:rgba(5,93,207,0.06);}
+.nb-create-circle{width:48px;height:48px;border-radius:50%;background:#1F2937;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:22px;color:rgba(255,255,255,0.35);}
+.nb-create-lbl{font-size:14px;font-weight:600;color:rgba(255,255,255,0.35);}
+/* notebook card */
+.nb-card{border-radius:14px;padding:20px;min-height:180px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:transform 0.18s,box-shadow 0.18s;position:relative;overflow:hidden;}
+.nb-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,0.3);}
+.nb-card-top{display:flex;align-items:flex-start;justify-content:space-between;}
+.nb-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;flex-shrink:0;}
+.nb-menu{color:rgba(255,255,255,0.35);font-size:18px;cursor:pointer;line-height:1;padding:2px 6px;border-radius:6px;transition:all 0.15s;}
+.nb-menu:hover{background:rgba(255,255,255,0.1);color:#fff;}
+.nb-title{font-size:15px;font-weight:700;color:#fff;line-height:1.35;margin-bottom:6px;}
+.nb-meta{font-size:12px;color:rgba(255,255,255,0.4);}
+.nb-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+/* card color palettes */
+.nb-green{background:#1A2E1E;}
+.nb-green .nb-icon{background:#234728;}
+.nb-blue{background:#0F2044;}
+.nb-blue .nb-icon{background:#163066;}
+.nb-purple{background:#1E1040;}
+.nb-purple .nb-icon{background:#2A1858;}
+.nb-teal{background:#0D2C2C;}
+.nb-teal .nb-icon{background:#133E3E;}
+.nb-amber{background:#2C1E08;}
+.nb-amber .nb-icon{background:#3D2A0B;}
+.nb-crimson{background:#2C0E0E;}
+.nb-crimson .nb-icon{background:#3E1313;}
+.nb-slate{background:#141D2C;}
+.nb-slate .nb-icon{background:#1C2940;}
+.nb-olive{background:#222810;}
+.nb-olive .nb-icon{background:#2E3517;}
+/* status badge colors */
+.badge-pos{background:rgba(34,197,94,0.18);color:#4ADE80;}
+.badge-neg{background:rgba(239,68,68,0.18);color:#F87171;}
+.badge-neu{background:rgba(5,93,207,0.25);color:#7FAAFF;}
+.badge-warn{background:rgba(245,158,11,0.18);color:#FCD34D;}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;right:28px;background:#021069;color:#fff;padding:13px 18px;border-radius:10px;font-size:14px;font-weight:600;display:none;z-index:999;align-items:center;gap:9px;box-shadow:0 8px 24px rgba(2,16,105,0.3);}
+.toast.show{display:flex;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="goto('hero')">
+    <div class="nav-logo-icon">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="#fff"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#fff" opacity=".6"/><rect x="2" y="9" width="5" height="5" rx="1" fill="#fff" opacity=".6"/><rect x="9" y="9" width="5" height="5" rx="1" fill="#fff"/></svg>
+    </div>
+    Analyzr
+  </div>
+  <div class="nav-links">
+    <span class="nav-link" onclick="goto('hero')">Home</span>
+    <span class="nav-link" onclick="goto('upload')">Analyze</span>
+    <span class="nav-link" onclick="goto('recent')">My Analyses</span>
+  </div>
+  <button class="nav-btn" onclick="goto('login')">Log In</button>
+</nav>
+
+<!-- HERO -->
+<div class="page active" id="page-hero">
+  <div class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-orb"></div>
+    <div class="hero-body">
+      <div class="hero-pill"><div class="hero-pill-dot"></div><span>AI-Powered Feedback Analysis</span></div>
+      <h1 class="hero-title">Turn raw feedback into <em>clear insight</em></h1>
+      <p class="hero-sub">Upload any dataset. Analyzr identifies sentiment, extracts themes, and delivers a structured report — in seconds.</p>
+      <div class="hero-ctas">
+        <button class="btn-white" onclick="goto('upload')">Start Analyzing →</button>
+        <button class="btn-outline" onclick="goto('recent')">View My Analyses</button>
+      </div>
+    </div>
+    <div class="hero-preview">
+      <div class="prev-card">
+        <div class="prev-eyebrow">Sentiment Breakdown</div>
+        <div class="prev-bar-row"><div class="prev-bar-bg"><div class="prev-bar-fill" style="width:68%;background:#22C55E;"></div></div><div class="prev-bar-label" style="color:rgba(255,255,255,0.7);">68%</div></div>
+        <div class="prev-bar-row"><div class="prev-bar-bg"><div class="prev-bar-fill" style="width:22%;background:#EF4444;"></div></div><div class="prev-bar-label" style="color:rgba(255,255,255,0.7);">22%</div></div>
+        <div class="prev-bar-row"><div class="prev-bar-bg"><div class="prev-bar-fill" style="width:10%;background:#F59E0B;"></div></div><div class="prev-bar-label" style="color:rgba(255,255,255,0.7);">10%</div></div>
+      </div>
+      <div class="prev-card">
+        <div class="prev-eyebrow">Top Themes Identified</div>
+        <div><div class="prev-chip">Delivery Speed</div><div class="prev-chip">Packaging</div><div class="prev-chip">Customer Support</div><div class="prev-chip">Product Quality</div><div class="prev-chip">Return Process</div></div>
+      </div>
+      <div class="prev-card">
+        <div class="prev-eyebrow">Summary Insight</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.7);line-height:1.65;">Customers are largely satisfied with product quality. Main pain points cluster around shipping delays and packaging damage during transit.</div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-n">50K+</div><div class="hero-stat-l">Datasets Analyzed</div></div>
+      <div class="hero-stat"><div class="hero-stat-n">98%</div><div class="hero-stat-l">Accuracy Rate</div></div>
+      <div class="hero-stat"><div class="hero-stat-n">&lt;10s</div><div class="hero-stat-l">Avg. Processing Time</div></div>
+      <div class="hero-stat"><div class="hero-stat-n">4.9★</div><div class="hero-stat-l">User Rating</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="page" id="page-login">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-l">
+        <div class="login-l-grid"></div>
+        <div class="login-l-inner">
+          <div class="login-brand">⬡ Analyzr</div>
+          <div class="login-hl">Insights that<br/>move teams<br/>forward.</div>
+          <div class="login-hl-sub" style="margin-bottom:0;">Connect your feedback data and let AI surface what truly matters for your business.</div>
+        </div>
+        <div class="login-tags">
+          <div class="login-tag">✓ Sentiment Analysis</div>
+          <div class="login-tag">✓ Theme Extraction</div>
+          <div class="login-tag">✓ Instant Reports</div>
+          <div class="login-tag">✓ CSV & Excel</div>
+          <div class="login-tag">✓ PDF Export</div>
+        </div>
+      </div>
+      <div class="login-r">
+        <div class="login-r-title">Welcome back</div>
+        <div class="login-r-sub">Sign in to your Analyzr account to continue.</div>
+        <label class="form-label">Email address</label>
+        <input class="form-input" type="email" placeholder="you@company.com"/>
+        <div class="form-row"><label class="form-label" style="margin:0;">Password</label><span class="form-forgot">Forgot password?</span></div>
+        <input class="form-input" type="password" placeholder="••••••••" style="margin-top:5px;"/>
+        <button class="btn-navy" onclick="goto('upload');toast('✓ Signed in successfully')">Sign in</button>
+        <div class="form-div">or</div>
+        <button class="btn-google" onclick="goto('upload');toast('✓ Signed in with Google')">
+          <svg width="17" height="17" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+          Continue with Google
+        </button>
+        <div class="form-signup">Don't have an account? <a onclick="toast('Sign up coming soon!')">Sign up free</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UPLOAD -->
+<div class="page" id="page-upload">
+  <div class="inner-page">
+    <div class="ph-eyebrow">New Analysis</div>
+    <div class="ph-title">Upload & Analyze</div>
+    <div class="ph-sub">Upload your feedback dataset and configure the analysis parameters below.</div>
+    <div class="upload-layout">
+      <div>
+        <div class="card">
+          <div class="card-title">Upload Feedback Data</div>
+          <div class="card-sub">Drag & drop your file or click to browse</div>
+          <div class="dropzone" id="dz" ondragover="event.preventDefault();this.classList.add('dz-active')" ondragleave="this.classList.remove('dz-active')" ondrop="onDrop(event)" onclick="document.getElementById('fi').click()">
+            <div class="dz-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#055DCF" stroke-width="2" stroke-linecap="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg></div>
+            <div class="dz-title">Drop your CSV or Excel file here</div>
+            <div class="dz-sub">Supports .csv, .xlsx, .xls — up to 50MB</div>
+            <button class="btn-blue">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Browse Files
+            </button>
+          </div>
+          <input id="fi" type="file" accept=".csv,.xlsx,.xls" style="display:none" onchange="onFileSelect(event)"/>
+          <div class="file-prev" id="fp" style="display:none">
+            <div class="file-prev-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#055DCF" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+            <div><div class="file-prev-name" id="fn">feedback_q3.csv</div><div class="file-prev-size" id="fs">2.4 MB</div></div>
+            <div class="file-prev-rm" onclick="rmFile()">×</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Configure Columns</div>
+          <div class="card-sub">Tell Analyzr which column contains the feedback text</div>
+          <div class="sel-label">Feedback Column</div>
+          <select class="sel"><option>— Select a column —</option><option selected>feedback_text</option><option>comments</option><option>review_body</option></select>
+          <div class="sel-label">Category Column <span style="color:#98A2B3;font-weight:400;">(optional)</span></div>
+          <select class="sel"><option>— None —</option><option>product_category</option><option>region</option></select>
+        </div>
+        <div class="card">
+          <div class="card-title">Analysis Options</div>
+          <div class="card-sub">Choose what to extract from the feedback</div>
+          <div style="margin-bottom:20px;">
+            <span class="opt-chip on"><input type="checkbox" checked style="accent-color:#021069;"/> Sentiment Analysis</span>
+            <span class="opt-chip on"><input type="checkbox" checked style="accent-color:#021069;"/> Theme Extraction</span>
+            <span class="opt-chip off"><input type="checkbox" style="accent-color:#055DCF;"/> Keyword Frequency</span>
+            <span class="opt-chip off"><input type="checkbox" style="accent-color:#055DCF;"/> Executive Summary</span>
+          </div>
+          <button class="btn-run" onclick="runAnalysis()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Run Analysis
+          </button>
+          <div id="prog-wrap" style="display:none;margin-top:20px;">
+            <div class="prog-label-row"><span class="prog-label" id="prog-lbl">Processing…</span><span class="prog-pct" id="prog-pct">0%</span></div>
+            <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:16px;">Processing Steps</div>
+          <div id="steps">
+            <div class="step-row"><div class="step-num" id="st1">1</div><div class="step-text">Upload & Validate File</div></div>
+            <div class="step-row"><div class="step-num" id="st2">2</div><div class="step-text">Parse Feedback Column</div></div>
+            <div class="step-row"><div class="step-num" id="st3">3</div><div class="step-text">Run Sentiment Model</div></div>
+            <div class="step-row"><div class="step-num" id="st4">4</div><div class="step-text">Extract Themes</div></div>
+            <div class="step-row"><div class="step-num" id="st5">5</div><div class="step-text">Generate Summary</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;">Supported Formats</div>
+          <div class="fmt-chip">CSV</div><div class="fmt-chip">XLSX</div><div class="fmt-chip">XLS</div>
+          <div style="margin-top:16px;">
+            <div class="tip-row"><div class="tip-dot"></div><div class="tip-text">Ensure your file has a header row</div></div>
+            <div class="tip-row"><div class="tip-dot"></div><div class="tip-text">Remove personally identifiable information before uploading</div></div>
+            <div class="tip-row"><div class="tip-dot"></div><div class="tip-text">Minimum 10 rows recommended for accurate results</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OUTPUT -->
+<div class="page" id="page-output">
+  <div class="inner-page">
+    <div class="ph-eyebrow">Analysis Complete · feedback_q3.csv</div>
+    <div class="ph-title">Results Overview</div>
+    <div class="ph-sub">1,284 feedback entries analyzed · Completed in 8.3 seconds</div>
+    <div class="output-layout">
+      <div>
+        <div class="summary-hero">
+          <div class="summary-hero-grid"></div>
+          <div class="s-eyebrow">AI-Generated Executive Summary</div>
+          <div class="s-text">Customers express strong satisfaction with product quality and delivery speed, with 68% of responses carrying positive sentiment. The most recurring concern is packaging damage during transit, cited across 22% of negative reviews. Customer support response times surface as a secondary pain point, particularly for international orders. Immediate action is recommended on packaging standards and support escalation processes.</div>
+        </div>
+        <div class="metrics-4">
+          <div class="metric-box"><div class="metric-lbl">Positive</div><div class="metric-val" style="color:#16A34A;">68%</div><div class="metric-hint">872 entries</div></div>
+          <div class="metric-box"><div class="metric-lbl">Negative</div><div class="metric-val" style="color:#DC2626;">22%</div><div class="metric-hint">282 entries</div></div>
+          <div class="metric-box"><div class="metric-lbl">Neutral</div><div class="metric-val" style="color:#D97706;">10%</div><div class="metric-hint">130 entries</div></div>
+          <div class="metric-box"><div class="metric-lbl">Avg. Score</div><div class="metric-val" style="color:#021069;">7.4</div><div class="metric-hint">out of 10</div></div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Positive Feedback Highlights</div><span class="badge badge-green">872 entries</span></div>
+          <div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">"Fast delivery and the product was exactly as described. Will definitely order again."</div></div>
+          <div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">"Amazing quality for the price. Packaging was neat and everything arrived in perfect condition."</div></div>
+          <div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">"Customer support resolved my issue within an hour. Very impressed with the response time."</div></div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Negative Feedback Highlights</div><span class="badge badge-red">282 entries</span></div>
+          <div class="fb-item neg"><div class="fb-dot neg">✕</div><div class="fb-text">"The box arrived completely crushed — item was fine but packaging needs serious improvement."</div></div>
+          <div class="fb-item neg"><div class="fb-dot neg">✕</div><div class="fb-text">"Waited 3 days for a reply from support. Unacceptable for a premium product tier."</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-title" style="margin-bottom:14px;">Top Themes</div>
+          <div class="theme-row"><span class="theme-name">Packaging Quality</span><span class="theme-cnt">341</span></div>
+          <div class="theme-row"><span class="theme-name">Delivery Speed</span><span class="theme-cnt">289</span></div>
+          <div class="theme-row"><span class="theme-name">Product Quality</span><span class="theme-cnt">256</span></div>
+          <div class="theme-row"><span class="theme-name">Customer Support</span><span class="theme-cnt">198</span></div>
+          <div class="theme-row"><span class="theme-name">Pricing & Value</span><span class="theme-cnt">121</span></div>
+          <div class="theme-row"><span class="theme-name">Return Process</span><span class="theme-cnt">79</span></div>
+        </div>
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-title" style="margin-bottom:16px;">Sentiment by Category</div>
+          <div class="cat-bar-row"><div class="cat-bar-top"><span class="cat-bar-lbl">Electronics</span><span class="cat-bar-pct" style="color:#16A34A;">81%</span></div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:81%;background:#22C55E;"></div></div></div>
+          <div class="cat-bar-row"><div class="cat-bar-top"><span class="cat-bar-lbl">Apparel</span><span class="cat-bar-pct" style="color:#16A34A;">74%</span></div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:74%;background:#22C55E;"></div></div></div>
+          <div class="cat-bar-row"><div class="cat-bar-top"><span class="cat-bar-lbl">Home & Garden</span><span class="cat-bar-pct" style="color:#D97706;">58%</span></div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:58%;background:#F59E0B;"></div></div></div>
+          <div class="cat-bar-row"><div class="cat-bar-top"><span class="cat-bar-lbl">Beauty</span><span class="cat-bar-pct" style="color:#DC2626;">44%</span></div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:44%;background:#EF4444;"></div></div></div>
+        </div>
+        <button class="btn-dark" onclick="toast('✓ Report exported as PDF')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export Full Report
+        </button>
+        <button class="btn-blue-full" onclick="goto('recent');toast('✓ Saved to My Analyses')">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save to My Analyses
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RECENT ANALYSES — NotebookLM layout -->
+<div class="page" id="page-recent">
+  <div class="recent-page-bg">
+
+    <!-- Top bar -->
+    <div class="rec-topbar">
+      <div class="rec-tabs-wrap">
+        <div class="rec-tab active" onclick="switchTab(this)">All</div>
+        <div class="rec-tab" onclick="switchTab(this)">My Analyses</div>
+        <div class="rec-tab" onclick="switchTab(this)">Shared</div>
+      </div>
+      <div class="rec-toolbar">
+        <div class="rec-search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="Search analyses…"/>
+        </div>
+        <div class="rec-view-btns">
+          <div class="rec-view-btn active">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </div>
+          <div class="rec-view-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </div>
+        </div>
+        <div class="rec-sort">
+          Most recent
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <button class="btn-create" onclick="goto('upload')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Analysis
+        </button>
+      </div>
+    </div>
+
+    <!-- My Analyses grid -->
+    <div class="sec-label">My Analyses</div>
+    <div class="nb-grid">
+
+      <!-- Create new card -->
+      <div class="nb-create" onclick="goto('upload')">
+        <div class="nb-create-circle">+</div>
+        <div class="nb-create-lbl">New Analysis</div>
+      </div>
+
+      <!-- Card 1 -->
+      <div class="nb-card nb-green" onclick="goto('output')">
+        <div>
+          <div class="nb-card-top">
+            <div class="nb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="nb-menu">⋯</div>
+          </div>
+          <div class="nb-badge badge-pos">68% Positive</div>
+          <div class="nb-title">Q3 Customer Feedback Analysis</div>
+        </div>
+        <div class="nb-meta">May 4, 2026 · 1,284 entries · CSV</div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="nb-card nb-blue" onclick="goto('output')">
+        <div>
+          <div class="nb-card-top">
+            <div class="nb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7FAAFF" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            </div>
+            <div class="nb-menu">⋯</div>
+          </div>
+          <div class="nb-badge badge-neu">Neutral Leaning</div>
+          <div class="nb-title">E-commerce Returns Deep Dive</div>
+        </div>
+        <div class="nb-meta">Apr 28, 2026 · 3,102 entries · XLSX</div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="nb-card nb-purple" onclick="goto('output')">
+        <div>
+          <div class="nb-card-top">
+            <div class="nb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C084FC" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="nb-menu">⋯</div>
+          </div>
+          <div class="nb-badge badge-pos">74% Positive</div>
+          <div class="nb-title">Global NPS Survey — Q1 2026</div>
+        </div>
+        <div class="nb-meta">Apr 15, 2026 · 5 sources merged</div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="nb-card nb-teal" onclick="goto('output')">
+        <div>
+          <div class="nb-card-top">
+            <div class="nb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="nb-menu">⋯</div>
+          </div>
+          <div class="nb-badge badge-neg">31% Negative</div>
+          <div class="nb-title">App Store Reviews — iOS & Android</div>
+        </div>
+        <div class="nb-meta">Mar 22, 2026 · 2,100 entries · CSV</div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="nb-card nb-amber" onclick="goto('output')">
+        <div>
+          <div class="nb-card-top">
+            <div class="nb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <div class="nb-menu">⋯</div>
+          </div>
+          <div class="nb-badge badge-warn">Mixed Signals</div>
+          <div class="nb-title">Support Ticket Sentiment Tracker</div>
+        </div>
+        <div class="nb-meta">Mar 10, 2026 · 890 entries · XLSX</div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="nb-card nb-crimson" onclick="goto('output')">
+        <div>
+          <div class="nb-card-top">
+            <div class="nb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <div class="nb-menu">⋯</div>
+          </div>
+          <div class="nb-badge badge-neg">42% Negative</div>
+          <div class="nb-title">Brand Perception — Social Listening</div>
+        </div>
+        <div class="nb-meta">Feb 18, 2026 · 4 sources merged</div>
+      </div>
+
+      <!-- Card 7 -->
+      <div class="nb-card nb-slate" onclick="goto('output')">
+        <div>
+          <div class="nb-card-top">
+            <div class="nb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </div>
+            <div class="nb-menu">⋯</div>
+          </div>
+          <div class="nb-badge badge-pos">81% Positive</div>
+          <div class="nb-title">Product Launch Feedback — V3.0</div>
+        </div>
+        <div class="nb-meta">Jan 30, 2026 · 672 entries · CSV</div>
+      </div>
+    </div>
+
+    <!-- Featured / Templates -->
+    <div class="sec-label">Featured Templates</div>
+    <div class="nb-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="nb-card nb-blue" style="min-height:150px;" onclick="toast('CSAT template loaded!')">
+        <div>
+          <div class="nb-card-top">
+            <div class="nb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7FAAFF" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div class="nb-menu">⋯</div>
+          </div>
+          <div class="nb-title">CSAT Survey Analyzer</div>
+        </div>
+        <div class="nb-meta">Template · Customer Satisfaction</div>
+      </div>
+      <div class="nb-card nb-olive" style="min-height:150px;" onclick="toast('Employee Pulse template loaded!')">
+        <div>
+          <div class="nb-card-top">
+            <div class="nb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A3E635" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="nb-menu">⋯</div>
+          </div>
+          <div class="nb-title">Employee Pulse Survey</div>
+        </div>
+        <div class="nb-meta">Template · HR & People Ops</div>
+      </div>
+      <div class="nb-card nb-purple" style="min-height:150px;" onclick="toast('UX Research template loaded!')">
+        <div>
+          <div class="nb-card-top">
+            <div class="nb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C084FC" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <div class="nb-menu">⋯</div>
+          </div>
+          <div class="nb-title">User Research Synthesis</div>
+        </div>
+        <div class="nb-meta">Template · UX Research</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toastEl">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg">Done!</span>
+</div>
+
+<script>
+function goto(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  window.scrollTo(0,0);
+}
+function toast(msg){
+  const el=document.getElementById('toastEl');
+  document.getElementById('toastMsg').textContent=msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3000);
+}
+function onDrop(e){
+  e.preventDefault();
+  document.getElementById('dz').classList.remove('dz-active');
+  const f=e.dataTransfer.files[0];
+  if(f)showFile(f);
+}
+function onFileSelect(e){
+  const f=e.target.files[0];
+  if(f)showFile(f);
+}
+function showFile(f){
+  document.getElementById('fn').textContent=f.name;
+  document.getElementById('fs').textContent=(f.size/1048576).toFixed(1)+' MB';
+  document.getElementById('fp').style.display='flex';
+  document.getElementById('dz').style.display='none';
+}
+function rmFile(){
+  document.getElementById('fp').style.display='none';
+  document.getElementById('dz').style.display='block';
+  document.getElementById('fi').value='';
+}
+function runAnalysis(){
+  const pw=document.getElementById('prog-wrap');
+  const pf=document.getElementById('prog-fill');
+  const pl=document.getElementById('prog-lbl');
+  const pp=document.getElementById('prog-pct');
+  pw.style.display='block';
+  const steps=['Validating file…','Parsing columns…','Running sentiment model…','Extracting themes…','Generating summary…'];
+  const sids=['st1','st2','st3','st4','st5'];
+  let i=0;
+  const iv=setInterval(()=>{
+    const pct=Math.round((i+1)/5*100);
+    pf.style.width=pct+'%';
+    pp.textContent=pct+'%';
+    pl.textContent=steps[i]||'Complete!';
+    if(sids[i])document.getElementById(sids[i]).classList.add('done');
+    i++;
+    if(i>=5){clearInterval(iv);setTimeout(()=>goto('output'),500);}
+  },700);
+}
+function switchTab(el){
+  document.querySelectorAll('.rec-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
