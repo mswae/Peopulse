@@ -706,24 +706,108 @@ function rmFile(){
   document.getElementById('dz').style.display='block';
   document.getElementById('fi').value='';
 }
-function runAnalysis(){
-  const pw=document.getElementById('prog-wrap');
-  const pf=document.getElementById('prog-fill');
-  const pl=document.getElementById('prog-lbl');
-  const pp=document.getElementById('prog-pct');
-  pw.style.display='block';
-  const steps=['Validating file…','Parsing columns…','Running sentiment model…','Extracting themes…','Generating summary…'];
-  const sids=['st1','st2','st3','st4','st5'];
-  let i=0;
-  const iv=setInterval(()=>{
-    const pct=Math.round((i+1)/5*100);
-    pf.style.width=pct+'%';
-    pp.textContent=pct+'%';
-    pl.textContent=steps[i]||'Complete!';
-    if(sids[i])document.getElementById(sids[i]).classList.add('done');
-    i++;
-    if(i>=5){clearInterval(iv);setTimeout(()=>goto('output'),500);}
-  },700);
+function populateOutput(apiData) {
+  const analysis = apiData.analysis;
+
+  // 1. Update the page subtitle with actual row counts and filename
+  const subtitle = document.querySelector('#page-output .ph-sub');
+  if (subtitle) {
+    subtitle.textContent = `${apiData.rows_detected} feedback entries analyzed from ${apiData.filename}`;
+  }
+
+  // 2. Inject actionable recommendations into the Executive Summary box
+  const summaryBox = document.querySelector('.s-text');
+  if (summaryBox && analysis.actionable_recommendations) {
+    summaryBox.textContent = analysis.actionable_recommendations.join(" ");
+  }
+
+  // 3. Helper to format the feedback arrays into HTML rows
+  const generateFeedbackHTML = (items, type) => {
+    if (!items || items.length === 0) return `<div class="fb-text">No data found.</div>`;
+    return items.map(item => `
+      <div class="fb-item ${type}">
+        <div class="fb-dot ${type}"></div>
+        <div class="fb-text">"${item}"</div>
+      </div>
+    `).join('');
+  };
+
+  // 4. Find the specific cards and overwrite the hardcoded feedback
+  const cards = document.querySelectorAll('#page-output .card');
+  cards.forEach(card => {
+    const title = card.querySelector('.card-title');
+    if (!title) return;
+
+    if (title.textContent.includes('Positive Feedback Highlights')) {
+      const header = card.querySelector('div[style*="display:flex"]').outerHTML;
+      card.innerHTML = header + generateFeedbackHTML(analysis.top_praises, 'pos');
+    }
+    
+    if (title.textContent.includes('Negative Feedback Highlights')) {
+      const header = card.querySelector('div[style*="display:flex"]').outerHTML;
+      card.innerHTML = header + generateFeedbackHTML(analysis.top_complaints, 'neg');
+    }
+  });
+}
+async function runAnalysis() {
+  const fileInput = document.getElementById('fi');
+  const file = fileInput.files[0];
+
+  if (!file) {
+    toast('Error: Please upload a CSV file first.');
+    return;
+  }
+
+  // Reveal progress wrapper
+  const pw = document.getElementById('prog-wrap');
+  const pf = document.getElementById('prog-fill');
+  const pl = document.getElementById('prog-lbl');
+  const pp = document.getElementById('prog-pct');
+  pw.style.display = 'block';
+
+  // Update UI to show upload is starting
+  pl.textContent = 'Uploading and analyzing...';
+  pf.style.width = '40%';
+  pp.textContent = '40%';
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    // Call the FastAPI backend
+    const response = await fetch('http://127.0.0.1:8000/upload-csv', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Failed to process file');
+    }
+
+    const data = await response.json();
+    console.log("Analysis Success:", data);
+
+    populateOutput(data);
+
+    // Complete the progress bar
+    pf.style.width = '100%';
+    pp.textContent = '100%';
+    pl.textContent = 'Analysis Complete!';
+    document.getElementById('st5').classList.add('done'); // Mark final step done
+
+    // Save the data globally so the output page can use it in Step 2
+    window.analyzrData = data; 
+
+    // Move to output page
+    setTimeout(() => goto('output'), 800);
+
+  } catch (error) {
+    console.error('API Error:', error);
+    toast('Analysis failed. Check the console.');
+    pl.textContent = 'Error processing file.';
+    pf.style.backgroundColor = '#EF4444'; // Turn bar red on error
+  }
 }
 function switchTab(el){
   document.querySelectorAll('.rec-tab').forEach(t=>t.classList.remove('active'));
