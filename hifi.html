@@ -334,142 +334,111 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
 
 <!-- UPLOAD -->
 <div class="page" id="page-upload">
-  <div class="inner-page">
-    <div class="ph-eyebrow">New Analysis</div>
-    <div class="ph-title">Upload & Analyze</div>
-    <div class="ph-sub">Upload your feedback dataset and configure the analysis parameters below.</div>
-    <div class="upload-layout">
-      <div>
-        <div class="card">
-          <div class="card-title">Upload Feedback Data</div>
-          <div class="card-sub">Drag & drop your file or click to browse</div>
-          <div class="dropzone" id="dz" ondragover="event.preventDefault();this.classList.add('dz-active')" ondragleave="this.classList.remove('dz-active')" ondrop="onDrop(event)" onclick="document.getElementById('fi').click()">
-            <div class="dz-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#055DCF" stroke-width="2" stroke-linecap="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg></div>
-            <div class="dz-title">Drop your CSV or Excel file here</div>
-            <div class="dz-sub">Supports .csv, .xlsx, .xls — up to 50MB</div>
-            <button class="btn-blue">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              Browse Files
-            </button>
-          </div>
-          <input id="fi" type="file" accept=".csv,.xlsx,.xls" style="display:none" onchange="onFileSelect(event)"/>
-          <div class="file-prev" id="fp" style="display:none">
-            <div class="file-prev-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#055DCF" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-            <div><div class="file-prev-name" id="fn">feedback_q3.csv</div><div class="file-prev-size" id="fs">2.4 MB</div></div>
-            <div class="file-prev-rm" onclick="rmFile()">×</div>
-          </div>
+    <div class="inner-page">
+        <div class="ph-eyebrow">New Analysis</div>
+        <div class="ph-title">Upload & Analyze</div>
+        <div class="ph-sub">Upload your feedback dataset and configure the analysis parameters below.</div>
+        <div class="upload-layout">
+            <div>
+                <div class="card">
+                    <div class="card-title">Upload Feedback Data</div>
+                    <div class="card-sub">Drag & drop your file or click to browse</div>
+                        <div class="dropzone" id="dz" ondragover="event.preventDefault();this.classList.add('dz-active')" ondragleave="this.classList.remove('dz-active')" ondrop="onDrop(event)" onclick="document.getElementById('fi').click()">
+                            <div class="dz-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#055DCF" stroke-width="2" stroke-linecap="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg></div>
+                            <div class="dz-title">Drop your CSV or Excel file here</div>
+                            <div class="dz-sub">Supports .csv, .xlsx, .xls — up to 50MB</div>
+                            <button class="btn-blue">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                Browse Files
+                            </button>
+                        </div>
+                    <input id="fi" type="file" accept=".csv,.xlsx,.xls" style="display:none" onchange="onFileSelect(event)"/>
+                    <div class="file-prev" id="fp" style="display:none">
+                        <div class="file-prev-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#055DCF" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                        <div><div class="file-prev-name" id="fn">feedback_q3.csv</div><div class="file-prev-size" id="fs">2.4 MB</div></div>
+                        <div class="file-prev-rm" onclick="rmFile()">×</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <button class="btn-run" onclick="runAnalysis()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        Run Analysis
+                    </button>
+                    <div id="prog-wrap" style="display:none;margin-top:20px;">
+                        <div class="prog-label-row"><span class="prog-label" id="prog-lbl">Processing…</span><span class="prog-pct" id="prog-pct">0%</span></div>
+                        <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+                    </div>
+                </div>
+            </div>
+        <div>
+            <div class="card">
+                <div class="card-title" style="margin-bottom:16px;">Processing Steps</div>
+                <div id="steps">
+                    <div class="step-row"><div class="step-num" id="st1">1</div><div class="step-text">Upload & Validate File</div></div>
+                    <div class="step-row"><div class="step-num" id="st2">2</div><div class="step-text">Parse Feedback Column</div></div>
+                    <div class="step-row"><div class="step-num" id="st3">3</div><div class="step-text">Run Sentiment Model</div></div>
+                    <div class="step-row"><div class="step-num" id="st4">4</div><div class="step-text">Extract Themes</div></div>
+                    <div class="step-row"><div class="step-num" id="st5">5</div><div class="step-text">Generate Summary</div></div>
+                </div>
+            </div>
+            <div class="card">
+            <div class="card-title" style="margin-bottom:12px;">Supported Formats</div>
+            <div class="fmt-chip">CSV</div><div class="fmt-chip">XLSX</div><div class="fmt-chip">XLS</div>
+            <div style="margin-top:16px;">
+                <div class="tip-row"><div class="tip-dot"></div><div class="tip-text">Ensure your file has a header row</div></div>
+                <div class="tip-row"><div class="tip-dot"></div><div class="tip-text">Remove personally identifiable information before uploading</div></div>
+                <div class="tip-row"><div class="tip-dot"></div><div class="tip-text">Minimum 10 rows recommended for accurate results</div></div>
+            </div>
+            </div>
         </div>
-        <div class="card">
-          <div class="card-title">Configure Columns</div>
-          <div class="card-sub">Tell Analyzr which column contains the feedback text</div>
-          <div class="sel-label">Feedback Column</div>
-          <select class="sel"><option>— Select a column —</option><option selected>feedback_text</option><option>comments</option><option>review_body</option></select>
-          <div class="sel-label">Category Column <span style="color:#98A2B3;font-weight:400;">(optional)</span></div>
-          <select class="sel"><option>— None —</option><option>product_category</option><option>region</option></select>
         </div>
-        <div class="card">
-          <div class="card-title">Analysis Options</div>
-          <div class="card-sub">Choose what to extract from the feedback</div>
-          <div style="margin-bottom:20px;">
-            <span class="opt-chip on"><input type="checkbox" checked style="accent-color:#021069;"/> Sentiment Analysis</span>
-            <span class="opt-chip on"><input type="checkbox" checked style="accent-color:#021069;"/> Theme Extraction</span>
-            <span class="opt-chip off"><input type="checkbox" style="accent-color:#055DCF;"/> Keyword Frequency</span>
-            <span class="opt-chip off"><input type="checkbox" style="accent-color:#055DCF;"/> Executive Summary</span>
-          </div>
-          <button class="btn-run" onclick="runAnalysis()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Run Analysis
-          </button>
-          <div id="prog-wrap" style="display:none;margin-top:20px;">
-            <div class="prog-label-row"><span class="prog-label" id="prog-lbl">Processing…</span><span class="prog-pct" id="prog-pct">0%</span></div>
-            <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="card">
-          <div class="card-title" style="margin-bottom:16px;">Processing Steps</div>
-          <div id="steps">
-            <div class="step-row"><div class="step-num" id="st1">1</div><div class="step-text">Upload & Validate File</div></div>
-            <div class="step-row"><div class="step-num" id="st2">2</div><div class="step-text">Parse Feedback Column</div></div>
-            <div class="step-row"><div class="step-num" id="st3">3</div><div class="step-text">Run Sentiment Model</div></div>
-            <div class="step-row"><div class="step-num" id="st4">4</div><div class="step-text">Extract Themes</div></div>
-            <div class="step-row"><div class="step-num" id="st5">5</div><div class="step-text">Generate Summary</div></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title" style="margin-bottom:12px;">Supported Formats</div>
-          <div class="fmt-chip">CSV</div><div class="fmt-chip">XLSX</div><div class="fmt-chip">XLS</div>
-          <div style="margin-top:16px;">
-            <div class="tip-row"><div class="tip-dot"></div><div class="tip-text">Ensure your file has a header row</div></div>
-            <div class="tip-row"><div class="tip-dot"></div><div class="tip-text">Remove personally identifiable information before uploading</div></div>
-            <div class="tip-row"><div class="tip-dot"></div><div class="tip-text">Minimum 10 rows recommended for accurate results</div></div>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <!-- OUTPUT -->
 <div class="page" id="page-output">
-  <div class="inner-page">
-    <div class="ph-eyebrow">Analysis Complete · feedback_q3.csv</div>
-    <div class="ph-title">Results Overview</div>
-    <div class="ph-sub">1,284 feedback entries analyzed · Completed in 8.3 seconds</div>
-    <div class="output-layout">
-      <div>
-        <div class="summary-hero">
-          <div class="summary-hero-grid"></div>
-          <div class="s-eyebrow">AI-Generated Executive Summary</div>
-          <div class="s-text">Customers express strong satisfaction with product quality and delivery speed, with 68% of responses carrying positive sentiment. The most recurring concern is packaging damage during transit, cited across 22% of negative reviews. Customer support response times surface as a secondary pain point, particularly for international orders. Immediate action is recommended on packaging standards and support escalation processes.</div>
+    <div class="inner-page">
+        <div class="ph-eyebrow">Analysis Complete · feedback_q3.csv</div> <!--TO-DO: edit the file name to reflect the actual one-->
+        <div class="ph-title">Results Overview</div>
+        <div class="ph-sub">1,284 feedback entries analyzed · Completed in 8.3 seconds</div> <!--TO-DO: edit no. of feedback entries analyzed to reflect actual one-->
+        <div class="output-layout">
+            <div>
+                <div class="summary-hero">
+                    <div class="summary-hero-grid"></div>
+                    <div class="s-eyebrow">AI-Generated Executive Summary</div>
+                    <div class="s-text">Customers express strong satisfaction with product quality and delivery speed, with 68% of responses carrying positive sentiment. The most recurring concern is packaging damage during transit, cited across 22% of negative reviews. Customer support response times surface as a secondary pain point, particularly for international orders. Immediate action is recommended on packaging standards and support escalation processes.</div>
+                </div>
+                <!-- <div class="metrics-4">
+                    <div class="metric-box"><div class="metric-lbl">Positive</div><div class="metric-val" style="color:#16A34A;">68%</div><div class="metric-hint">872 entries</div></div>
+                    <div class="metric-box"><div class="metric-lbl">Negative</div><div class="metric-val" style="color:#DC2626;">22%</div><div class="metric-hint">282 entries</div></div>
+                    <div class="metric-box"><div class="metric-lbl">Neutral</div><div class="metric-val" style="color:#D97706;">10%</div><div class="metric-hint">130 entries</div></div>
+                    <div class="metric-box"><div class="metric-lbl">Avg. Score</div><div class="metric-val" style="color:#021069;">7.4</div><div class="metric-hint">out of 10</div></div>
+                </div> -->
+                <div class="card">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Positive Feedback Highlights</div><span class="badge badge-green">872 entries</span></div>
+                    <div id="positive-list">
+                        <!--JS will put fb-items here-->
+                    </div>
+                </div>
+                <div class="card">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Negative Feedback Highlights</div><span class="badge badge-red">282 entries</span></div>
+                    <div id="negative-list">
+                        <!--JS will put fb-items here-->
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button class="btn-dark" onclick="toast('✓ Report exported as PDF')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Export Full Report
+                </button>
+                <button class="btn-blue-full" onclick="goto('recent');toast('✓ Saved to My Analyses')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Save to My Analyses
+                </button>
+            </div>
         </div>
-        <div class="metrics-4">
-          <div class="metric-box"><div class="metric-lbl">Positive</div><div class="metric-val" style="color:#16A34A;">68%</div><div class="metric-hint">872 entries</div></div>
-          <div class="metric-box"><div class="metric-lbl">Negative</div><div class="metric-val" style="color:#DC2626;">22%</div><div class="metric-hint">282 entries</div></div>
-          <div class="metric-box"><div class="metric-lbl">Neutral</div><div class="metric-val" style="color:#D97706;">10%</div><div class="metric-hint">130 entries</div></div>
-          <div class="metric-box"><div class="metric-lbl">Avg. Score</div><div class="metric-val" style="color:#021069;">7.4</div><div class="metric-hint">out of 10</div></div>
-        </div>
-        <div class="card">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Positive Feedback Highlights</div><span class="badge badge-green">872 entries</span></div>
-          <div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">"Fast delivery and the product was exactly as described. Will definitely order again."</div></div>
-          <div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">"Amazing quality for the price. Packaging was neat and everything arrived in perfect condition."</div></div>
-          <div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">"Customer support resolved my issue within an hour. Very impressed with the response time."</div></div>
-        </div>
-        <div class="card">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Negative Feedback Highlights</div><span class="badge badge-red">282 entries</span></div>
-          <div class="fb-item neg"><div class="fb-dot neg">✕</div><div class="fb-text">"The box arrived completely crushed — item was fine but packaging needs serious improvement."</div></div>
-          <div class="fb-item neg"><div class="fb-dot neg">✕</div><div class="fb-text">"Waited 3 days for a reply from support. Unacceptable for a premium product tier."</div></div>
-        </div>
-      </div>
-      <div>
-        <div class="card" style="margin-bottom:16px;">
-          <div class="card-title" style="margin-bottom:14px;">Top Themes</div>
-          <div class="theme-row"><span class="theme-name">Packaging Quality</span><span class="theme-cnt">341</span></div>
-          <div class="theme-row"><span class="theme-name">Delivery Speed</span><span class="theme-cnt">289</span></div>
-          <div class="theme-row"><span class="theme-name">Product Quality</span><span class="theme-cnt">256</span></div>
-          <div class="theme-row"><span class="theme-name">Customer Support</span><span class="theme-cnt">198</span></div>
-          <div class="theme-row"><span class="theme-name">Pricing & Value</span><span class="theme-cnt">121</span></div>
-          <div class="theme-row"><span class="theme-name">Return Process</span><span class="theme-cnt">79</span></div>
-        </div>
-        <div class="card" style="margin-bottom:16px;">
-          <div class="card-title" style="margin-bottom:16px;">Sentiment by Category</div>
-          <div class="cat-bar-row"><div class="cat-bar-top"><span class="cat-bar-lbl">Electronics</span><span class="cat-bar-pct" style="color:#16A34A;">81%</span></div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:81%;background:#22C55E;"></div></div></div>
-          <div class="cat-bar-row"><div class="cat-bar-top"><span class="cat-bar-lbl">Apparel</span><span class="cat-bar-pct" style="color:#16A34A;">74%</span></div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:74%;background:#22C55E;"></div></div></div>
-          <div class="cat-bar-row"><div class="cat-bar-top"><span class="cat-bar-lbl">Home & Garden</span><span class="cat-bar-pct" style="color:#D97706;">58%</span></div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:58%;background:#F59E0B;"></div></div></div>
-          <div class="cat-bar-row"><div class="cat-bar-top"><span class="cat-bar-lbl">Beauty</span><span class="cat-bar-pct" style="color:#DC2626;">44%</span></div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:44%;background:#EF4444;"></div></div></div>
-        </div>
-        <button class="btn-dark" onclick="toast('✓ Report exported as PDF')">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export Full Report
-        </button>
-        <button class="btn-blue-full" onclick="goto('recent');toast('✓ Saved to My Analyses')">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          Save to My Analyses
-        </button>
-      </div>
     </div>
-  </div>
 </div>
 
 <!-- RECENT ANALYSES — NotebookLM layout -->
@@ -674,61 +643,146 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
 </div>
 
 <script>
-function goto(p){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');
-  window.scrollTo(0,0);
-}
-function toast(msg){
-  const el=document.getElementById('toastEl');
-  document.getElementById('toastMsg').textContent=msg;
-  el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),3000);
-}
-function onDrop(e){
-  e.preventDefault();
-  document.getElementById('dz').classList.remove('dz-active');
-  const f=e.dataTransfer.files[0];
-  if(f)showFile(f);
-}
-function onFileSelect(e){
-  const f=e.target.files[0];
-  if(f)showFile(f);
-}
-function showFile(f){
-  document.getElementById('fn').textContent=f.name;
-  document.getElementById('fs').textContent=(f.size/1048576).toFixed(1)+' MB';
-  document.getElementById('fp').style.display='flex';
-  document.getElementById('dz').style.display='none';
-}
-function rmFile(){
-  document.getElementById('fp').style.display='none';
-  document.getElementById('dz').style.display='block';
-  document.getElementById('fi').value='';
-}
-function runAnalysis(){
-  const pw=document.getElementById('prog-wrap');
-  const pf=document.getElementById('prog-fill');
-  const pl=document.getElementById('prog-lbl');
-  const pp=document.getElementById('prog-pct');
-  pw.style.display='block';
-  const steps=['Validating file…','Parsing columns…','Running sentiment model…','Extracting themes…','Generating summary…'];
-  const sids=['st1','st2','st3','st4','st5'];
-  let i=0;
-  const iv=setInterval(()=>{
-    const pct=Math.round((i+1)/5*100);
-    pf.style.width=pct+'%';
-    pp.textContent=pct+'%';
-    pl.textContent=steps[i]||'Complete!';
-    if(sids[i])document.getElementById(sids[i]).classList.add('done');
-    i++;
-    if(i>=5){clearInterval(iv);setTimeout(()=>goto('output'),500);}
-  },700);
-}
-function switchTab(el){
-  document.querySelectorAll('.rec-tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-}
+    function goto(p){
+        document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+        document.getElementById('page-'+p).classList.add('active');
+        window.scrollTo(0,0);
+    }
+    function toast(msg){
+        const el=document.getElementById('toastEl');
+        document.getElementById('toastMsg').textContent=msg;
+        el.classList.add('show');
+        setTimeout(()=>el.classList.remove('show'),3000);
+    }
+    function onDrop(e){
+        e.preventDefault();
+        document.getElementById('dz').classList.remove('dz-active');
+        const f=e.dataTransfer.files[0];
+        if(f)showFile(f);
+    }
+    function onFileSelect(e){
+        const f=e.target.files[0];
+        if(f)showFile(f);
+    }
+    function showFile(f){
+        document.getElementById('fn').textContent=f.name;
+        document.getElementById('fs').textContent=(f.size/1048576).toFixed(1)+' MB';
+        document.getElementById('fp').style.display='flex';
+        document.getElementById('dz').style.display='none';
+    }
+    function rmFile(){
+        document.getElementById('fp').style.display='none';
+        document.getElementById('dz').style.display='block';
+        document.getElementById('fi').value='';
+    }
+    async function runAnalysis(){
+        const pw=document.getElementById('prog-wrap');
+        const pf=document.getElementById('prog-fill');
+        const pl=document.getElementById('prog-lbl');
+        const pp=document.getElementById('prog-pct');
+
+        // grab actual file from the hidden input
+        const fileInput = document.getElementById('fi');
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert("⚠️ Please select a valid file first.");
+            return;
+        }
+        const file = fileInput.files[0];
+
+        // Reset the UI and show the loading bar
+        pw.style.display = 'block';
+        pf.style.width = '20%';
+        pp.textContent = '20%';
+        pl.textContent = 'Uploading file to backend...';
+
+        // Package the file for FastAPI
+        const formData = new FormData();
+        formData.append('file', file); // The name 'file' MUST match your main code's parameter for POST /upload-csv
+
+        try {
+            // Update UI to show we are waiting on the AI
+            pf.style.width = '60%';
+            pp.textContent = '60%';
+            pl.textContent = 'AI is analyzing feedback (this may take a few seconds)...';
+
+            // THE REAL API CALL
+            const response = await fetch('http://127.0.0.1:8000/upload-csv', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.detail || "Unknown Server Error");
+            }
+
+            // SUCCESS! Push progress bar to 100%
+            pf.style.width = '100%';
+            pp.textContent = '100%';
+            pl.textContent = 'Analysis Complete!';
+
+            // 6. Save the data globally so the 'output' page can read it!
+            // We use sessionStorage to hold the JSON safely in the browser's memory.
+            sessionStorage.setItem('peopulse_analysis', JSON.stringify(data.analysis));
+
+            // trigger your team's page change after a half-second delay
+            setTimeout(() => goto('output'), 500);
+
+        } catch (error) {
+            // Handle rate limits or format errors gracefully on the UI
+            pl.textContent = `❌ Error: ${error.message}`;
+            pl.style.color = "red";
+            pf.style.backgroundColor = "red"; // Turn progress bar red
+            console.error("Backend Failure:", error);
+        }
+    }
+    function switchTab(el){
+        document.querySelectorAll('.rec-tab').forEach(t=>t.classList.remove('active'));
+        el.classList.add('active');
+    }
+    document.addEventListener("DOMContentLoaded", () => {
+        // 1. Pull the string out of the browser's temporary vault
+        const savedDataString = sessionStorage.getItem('peopulse_analysis');
+
+        // 2. Safety Check: If there's no data, tell the user to go back
+        if (!savedDataString) {
+            console.error("No analysis data found!");
+            document.getElementById('overview-list').innerHTML = "<li style='color:red;'>No data found. Please upload a CSV first.</li>";
+            return;
+        }
+
+        // 3. Convert the string BACK into our usable Python-style dictionary
+        const finalDict = JSON.parse(savedDataString);
+
+        // ==========================================
+        // INJECT THE DATA INTO THE CONTAINERS
+        // ==========================================
+
+        // Helper function to turn an array of strings into HTML list items
+        const createListHTML = (dataArray, cssClass, icon) => {
+            // We pass the data array, the CSS class ('pos' or 'neg'), and the icon ('✓' or '!')
+            return dataArray.map(item => `
+                <div class="fb-item ${cssClass}">
+                <div class="fb-dot ${cssClass}">${icon}</div>
+                <div class="fb-text">"${item}"</div>
+            </div>
+            `).join('');
+        };
+
+        // Inject contents into the HTML containers based on the keys in finalDict
+        // if (finalDict.actionable_recommendations) {
+        //     document.getElementById('overview-list').innerHTML = createListHTML(finalDict.actionable_recommendations);
+        // }
+
+        if (finalDict.top_praises) {
+            document.getElementById('positive-list').innerHTML = createListHTML(finalDict.top_praises, 'pos', '✓');
+        }
+
+        if (finalDict.top_complaints) {
+            document.getElementById('negative-list').innerHTML = createListHTML(finalDict.top_complaints, 'neg', '!');
+        }
+    });
 </script>
 </body>
 </html>
