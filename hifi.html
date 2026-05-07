@@ -142,7 +142,7 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
 .summary-hero{background:#021069;border-radius:14px;padding:28px;position:relative;overflow:hidden;margin-bottom:16px;}
 .summary-hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:32px 32px;}
 .s-eyebrow{font-size:10px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;position:relative;}
-.s-text{font-size:16px;line-height:1.7;color:rgba(255,255,255,0.85);position:relative;}
+#overview-list{font-size:16px;line-height:1.7;color:rgba(255,255,255,0.85);position:relative;}
 .metrics-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
 .metric-box{background:#fff;border:1px solid #EAECF0;border-radius:12px;padding:18px;}
 .metric-lbl{font-size:11px;font-weight:700;color:#98A2B3;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;}
@@ -406,14 +406,10 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
                 <div class="summary-hero">
                     <div class="summary-hero-grid"></div>
                     <div class="s-eyebrow">AI-Generated Executive Summary</div>
-                    <div class="s-text">Customers express strong satisfaction with product quality and delivery speed, with 68% of responses carrying positive sentiment. The most recurring concern is packaging damage during transit, cited across 22% of negative reviews. Customer support response times surface as a secondary pain point, particularly for international orders. Immediate action is recommended on packaging standards and support escalation processes.</div>
+                    <div id="overview-list">
+                        <!--JS will put a concatenated version of the items here, separated by spaces ' '-->
+                    </div>
                 </div>
-                <!-- <div class="metrics-4">
-                    <div class="metric-box"><div class="metric-lbl">Positive</div><div class="metric-val" style="color:#16A34A;">68%</div><div class="metric-hint">872 entries</div></div>
-                    <div class="metric-box"><div class="metric-lbl">Negative</div><div class="metric-val" style="color:#DC2626;">22%</div><div class="metric-hint">282 entries</div></div>
-                    <div class="metric-box"><div class="metric-lbl">Neutral</div><div class="metric-val" style="color:#D97706;">10%</div><div class="metric-hint">130 entries</div></div>
-                    <div class="metric-box"><div class="metric-lbl">Avg. Score</div><div class="metric-val" style="color:#021069;">7.4</div><div class="metric-hint">out of 10</div></div>
-                </div> -->
                 <div class="card">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Positive Feedback Highlights</div><span class="badge badge-green">872 entries</span></div>
                     <div id="positive-list">
@@ -770,10 +766,9 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
             `).join('');
         };
 
-        // Inject contents into the HTML containers based on the keys in finalDict
-        // if (finalDict.actionable_recommendations) {
-        //     document.getElementById('overview-list').innerHTML = createListHTML(finalDict.actionable_recommendations);
-        // }
+        if (finalDict.overview) {
+            document.getElementById('overview-list').innerHTML = finalDict.overview.map(item => `${item}`).join('');    //iterate thru the items in finalDict.overview and concatenate them
+        }
 
         if (finalDict.top_praises) {
             document.getElementById('positive-list').innerHTML = createListHTML(finalDict.top_praises, 'pos', '✓');

@@ -56,7 +56,7 @@ def analyze_feedback(feedback_df) -> dict:
         response = client.chat.completions.create(
             model="openrouter/owl-alpha",
             max_tokens=1000,
-            temperature=0.3,
+            temperature=0.2,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"Here is the raw citizen feedback:\n\n{feedback_string}"}
