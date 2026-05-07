@@ -96,9 +96,9 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
 
 /* ── UPLOAD ── */
 .inner-page{padding:40px 48px;}
-.ph-eyebrow{font-size:11px;font-weight:700;color:#055DCF;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;}
+#ph-eyebrow{font-size:11px;font-weight:700;color:#055DCF;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;}
 .ph-title{font-size:34px;font-weight:800;color:#021069;letter-spacing:-0.8px;margin-bottom:6px;}
-.ph-sub{font-size:14px;color:#98A2B3;margin-bottom:36px;}
+#ph-sub{font-size:14px;color:#98A2B3;margin-bottom:36px;}
 .upload-layout{display:grid;grid-template-columns:1fr 360px;gap:20px;}
 .card{background:#fff;border:1px solid #EAECF0;border-radius:14px;padding:28px;margin-bottom:16px;}
 .card-title{font-size:15px;font-weight:700;color:#021069;margin-bottom:4px;}
@@ -245,7 +245,7 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
     <div class="nav-logo-icon">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" fill="#fff"/><rect x="9" y="2" width="5" height="5" rx="1" fill="#fff" opacity=".6"/><rect x="2" y="9" width="5" height="5" rx="1" fill="#fff" opacity=".6"/><rect x="9" y="9" width="5" height="5" rx="1" fill="#fff"/></svg>
     </div>
-    Analyzr
+    Peopulse
   </div>
   <div class="nav-links">
     <span class="nav-link" onclick="goto('hero')">Home</span>
@@ -345,14 +345,14 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
                     <div class="card-sub">Drag & drop your file or click to browse</div>
                         <div class="dropzone" id="dz" ondragover="event.preventDefault();this.classList.add('dz-active')" ondragleave="this.classList.remove('dz-active')" ondrop="onDrop(event)" onclick="document.getElementById('fi').click()">
                             <div class="dz-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#055DCF" stroke-width="2" stroke-linecap="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg></div>
-                            <div class="dz-title">Drop your CSV or Excel file here</div>
-                            <div class="dz-sub">Supports .csv, .xlsx, .xls — up to 50MB</div>
+                            <div class="dz-title">Drop your CSV file here</div>
+                            <div class="dz-sub">Supports .csv — up to 50MB</div>
                             <button class="btn-blue">
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                                 Browse Files
                             </button>
                         </div>
-                    <input id="fi" type="file" accept=".csv,.xlsx,.xls" style="display:none" onchange="onFileSelect(event)"/>
+                    <input id="fi" type="file" accept=".csv" style="display:none" onchange="onFileSelect(event)"/>
                     <div class="file-prev" id="fp" style="display:none">
                         <div class="file-prev-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#055DCF" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
                         <div><div class="file-prev-name" id="fn">feedback_q3.csv</div><div class="file-prev-size" id="fs">2.4 MB</div></div>
@@ -383,7 +383,7 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
             </div>
             <div class="card">
             <div class="card-title" style="margin-bottom:12px;">Supported Formats</div>
-            <div class="fmt-chip">CSV</div><div class="fmt-chip">XLSX</div><div class="fmt-chip">XLS</div>
+            <div class="fmt-chip">CSV</div>
             <div style="margin-top:16px;">
                 <div class="tip-row"><div class="tip-dot"></div><div class="tip-text">Ensure your file has a header row</div></div>
                 <div class="tip-row"><div class="tip-dot"></div><div class="tip-text">Remove personally identifiable information before uploading</div></div>
@@ -398,9 +398,9 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
 <!-- OUTPUT -->
 <div class="page" id="page-output">
     <div class="inner-page">
-        <div class="ph-eyebrow">Analysis Complete · feedback_q3.csv</div> <!--TO-DO: edit the file name to reflect the actual one-->
+        <div id="ph-eyebrow"><!--JS will put file name here--></div>
         <div class="ph-title">Results Overview</div>
-        <div class="ph-sub">1,284 feedback entries analyzed · Completed in 8.3 seconds</div> <!--TO-DO: edit no. of feedback entries analyzed to reflect actual one-->
+        <div id="ph-sub"><!--JS will put rows analyzed here--></div>
         <div class="output-layout">
             <div>
                 <div class="summary-hero">
@@ -411,13 +411,13 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
                     </div>
                 </div>
                 <div class="card">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Positive Feedback Highlights</div><span class="badge badge-green">872 entries</span></div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Positive Feedback Highlights</div></div>
                     <div id="positive-list">
                         <!--JS will put fb-items here-->
                     </div>
                 </div>
                 <div class="card">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Negative Feedback Highlights</div><span class="badge badge-red">282 entries</span></div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Negative Feedback Highlights</div></div>
                     <div id="negative-list">
                         <!--JS will put fb-items here-->
                     </div>
@@ -721,6 +721,10 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
             // 6. Save the data globally so the 'output' page can read it!
             // We use sessionStorage to hold the JSON safely in the browser's memory.
             sessionStorage.setItem('peopulse_analysis', JSON.stringify(data.analysis));
+            sessionStorage.setItem('peopulse_filename', data.filename);
+            sessionStorage.setItem('peopulse_rows_detected', data.rows_detected);
+
+            populateOutputData();
 
             // trigger your team's page change after a half-second delay
             setTimeout(() => goto('output'), 500);
@@ -737,9 +741,11 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
         document.querySelectorAll('.rec-tab').forEach(t=>t.classList.remove('active'));
         el.classList.add('active');
     }
-    document.addEventListener("DOMContentLoaded", () => {
+    function populateOutputData() {
         // 1. Pull the string out of the browser's temporary vault
         const savedDataString = sessionStorage.getItem('peopulse_analysis');
+        const savedFilename = sessionStorage.getItem('peopulse_filename');
+        const savedRows = sessionStorage.getItem('peopulse_rows_detected');
 
         // 2. Safety Check: If there's no data, tell the user to go back
         if (!savedDataString) {
@@ -761,13 +767,18 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
             return dataArray.map(item => `
                 <div class="fb-item ${cssClass}">
                 <div class="fb-dot ${cssClass}">${icon}</div>
-                <div class="fb-text">"${item}"</div>
+                <div class="fb-text">${item}</div>
             </div>
             `).join('');
         };
 
+        if (savedFilename && savedRows) {
+            document.getElementById('ph-eyebrow').textContent = `Analysis Complete · ${savedFilename}`;
+            document.getElementById('ph-sub').textContent = `${savedRows} entries analyzed`;
+        }
+
         if (finalDict.overview) {
-            document.getElementById('overview-list').innerHTML = finalDict.overview.map(item => `${item}`).join('');    //iterate thru the items in finalDict.overview and concatenate them
+            document.getElementById('overview-list').innerHTML = finalDict.overview.map(item => `${item}`).join(' ');    //iterate thru the items in finalDict.overview and concatenate them
         }
 
         if (finalDict.top_praises) {
@@ -777,7 +788,7 @@ p.hero-sub{font-size:19px;color:rgba(255,255,255,0.6);line-height:1.65;max-width
         if (finalDict.top_complaints) {
             document.getElementById('negative-list').innerHTML = createListHTML(finalDict.top_complaints, 'neg', '!');
         }
-    });
+    }
 </script>
 </body>
 </html>
