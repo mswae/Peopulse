@@ -8,7 +8,16 @@ function goto(p) {
 /* ── Toast ── */
 function toast(msg) {
   const el = document.getElementById('toastEl');
-  document.getElementById('toastMsg').textContent = msg;
+  const msgEl = document.getElementById('toastMsg');
+  
+  // CRITICAL FIX: Prevent silent crashes if toast elements are missing
+  if (!el || !msgEl) {
+    console.error("Toast Error:", msg);
+    alert(msg); 
+    return;
+  }
+  
+  msgEl.textContent = msg;
   el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 3000);
 }

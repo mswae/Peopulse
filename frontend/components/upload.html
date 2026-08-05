@@ -24,23 +24,6 @@
             <div class="file-prev-rm" onclick="rmFile()">×</div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-title">Configure Columns</div>
-          <div class="card-sub">Tell Analyzr which column contains the feedback text</div>
-          <div class="sel-label">Feedback Column</div>
-          <select class="sel"><option>— Select a column —</option><option selected>feedback_text</option><option>comments</option><option>review_body</option></select>
-          <div class="sel-label">Category Column <span style="color:#98A2B3;font-weight:400;">(optional)</span></div>
-          <select class="sel"><option>— None —</option><option>product_category</option><option>region</option></select>
-        </div>
-        <div class="card">
-          <div class="card-title">Analysis Options</div>
-          <div class="card-sub">Choose what to extract from the feedback</div>
-          <div style="margin-bottom:20px;">
-            <span class="opt-chip on"><input type="checkbox" checked style="accent-color:#021069;"/> Sentiment Analysis</span>
-            <span class="opt-chip on"><input type="checkbox" checked style="accent-color:#021069;"/> Theme Extraction</span>
-            <span class="opt-chip off"><input type="checkbox" style="accent-color:#055DCF;"/> Keyword Frequency</span>
-            <span class="opt-chip off"><input type="checkbox" style="accent-color:#055DCF;"/> Executive Summary</span>
-          </div>
           <button class="btn-run" onclick="runAnalysis()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             Run Analysis

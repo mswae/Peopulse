@@ -96,7 +96,11 @@ async def upload_csv(file: UploadFile = File(...)):
         # call LLM analytics function
         # ======================================================
 
-        llm_analysis_results = analyze_feedback(merged_feedback_df) # Claude returns a plain string containing JSON structure
+        try:
+            llm_analysis_results = analyze_feedback(merged_feedback_df)
+        except Exception as e:
+            # CRITICAL FIX: Catch backend initialization errors properly
+            raise HTTPException(status_code=500, detail=f"Server Configuration Error: {str(e)}")
 
         # ======================================================
         # Bulletproof Regex Extractor
@@ -114,7 +118,7 @@ async def upload_csv(file: UploadFile = File(...)):
         # ======================================================
 
         try:
-            final_results_dict = json.loads(clean_json_string) # convert the JSON string to a Python dictionary
+            final_results_dict = json.loads(clean_json_string) 
             print("SUCCESSFULLY PARSED DICT:", final_results_dict)
 
         except json.JSONDecodeError:
