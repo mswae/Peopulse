@@ -8,7 +8,7 @@ Upload a CSV file, click the "Analyze Button", and the identified feedback colum
 """
 
 import gradio as gr
-from backend.services.data_pipeline import get_feedback_column, merge_feedback_columns
+from api.services.data_pipeline import get_feedback_column, merge_feedback_columns
 
 with gr.Blocks() as demo:
     gr.Markdown("## Feedback Column Identifier")

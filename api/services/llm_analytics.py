@@ -54,7 +54,7 @@ def analyze_feedback(feedback_df) -> dict:
     try:
         
         response = client.chat.completions.create(
-            model="openrouter/owl-alpha",
+            model="openrouter/free",
             max_tokens=1000,
             temperature=0.3,
             messages=[

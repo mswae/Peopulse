@@ -1,4 +1,3 @@
-import uvicorn
 import json
 import io
 import time
@@ -7,8 +6,8 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 
-from services.data_pipeline import get_feedback_column, merge_feedback_columns
-from services.llm_analytics import analyze_feedback
+from api.services.data_pipeline import get_feedback_column, merge_feedback_columns
+from api.services.llm_analytics import analyze_feedback
 
 # initialize app
 app = FastAPI(
@@ -25,13 +24,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
+@app.get("/api/")
 def health_check():
     return {"message": "API is running successfully!"}
 
-@app.post("/upload-csv")
+@app.post("/api/upload-csv")
 async def upload_csv(file: UploadFile = File(...)):
-
     if file.content_type != "text/csv":
         raise HTTPException(status_code=400, detail="Invalid file type. Please upload a CSV file.")
     else:
@@ -108,4 +106,5 @@ async def upload_csv(file: UploadFile = File(...)):
     )
     
 if __name__ == "__main__":
+    import uvicorn
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
