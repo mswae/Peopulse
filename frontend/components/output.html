@@ -1,14 +1,14 @@
 <div class="page" id="page-output">
   <div class="inner-page">
-    <div class="ph-eyebrow">Analysis Complete · feedback_q3.csv</div>
+    <div class="ph-eyebrow" id="output-eyebrow">Analysis Complete · feedback_q3.csv</div>
     <div class="ph-title">Results Overview</div>
-    <div class="ph-sub">1,284 feedback entries analyzed · Completed in 8.3 seconds</div>
+    <div class="ph-sub" id="output-sub">1,284 feedback entries analyzed · Completed in 8.3 seconds</div>
     <div class="output-layout">
       <div>
         <div class="summary-hero">
           <div class="summary-hero-grid"></div>
           <div class="s-eyebrow">AI-Generated Executive Summary</div>
-          <div class="s-text">Customers express strong satisfaction with product quality and delivery speed, with 68% of responses carrying positive sentiment. The most recurring concern is packaging damage during transit, cited across 22% of negative reviews. Customer support response times surface as a secondary pain point, particularly for international orders. Immediate action is recommended on packaging standards and support escalation processes.</div>
+          <div class="s-text" id="summary-text">Customers express strong satisfaction with product quality and delivery speed, with 68% of responses carrying positive sentiment. The most recurring concern is packaging damage during transit, cited across 22% of negative reviews. Customer support response times surface as a secondary pain point, particularly for international orders. Immediate action is recommended on packaging standards and support escalation processes.</div>
         </div>
         <div class="metrics-4">
           <div class="metric-box"><div class="metric-lbl">Positive</div><div class="metric-val" style="color:#16A34A;">68%</div><div class="metric-hint">872 entries</div></div>
@@ -17,26 +17,25 @@
           <div class="metric-box"><div class="metric-lbl">Avg. Score</div><div class="metric-val" style="color:#021069;">7.4</div><div class="metric-hint">out of 10</div></div>
         </div>
         <div class="card">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Positive Feedback Highlights</div><span class="badge badge-green">872 entries</span></div>
-          <div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">"Fast delivery and the product was exactly as described. Will definitely order again."</div></div>
-          <div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">"Amazing quality for the price. Packaging was neat and everything arrived in perfect condition."</div></div>
-          <div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">"Customer support resolved my issue within an hour. Very impressed with the response time."</div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Positive Feedback Highlights</div><span class="badge badge-green">AI Output</span></div>
+          <div id="positive-list">
+            <div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">"Fast delivery and the product was exactly as described. Will definitely order again."</div></div>
+            <div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">"Amazing quality for the price. Packaging was neat and everything arrived in perfect condition."</div></div>
+          </div>
         </div>
         <div class="card">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Negative Feedback Highlights</div><span class="badge badge-red">282 entries</span></div>
-          <div class="fb-item neg"><div class="fb-dot neg">✕</div><div class="fb-text">"The box arrived completely crushed — item was fine but packaging needs serious improvement."</div></div>
-          <div class="fb-item neg"><div class="fb-dot neg">✕</div><div class="fb-text">"Waited 3 days for a reply from support. Unacceptable for a premium product tier."</div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div class="card-title" style="margin:0;">Negative Feedback Highlights</div><span class="badge badge-red">AI Output</span></div>
+          <div id="negative-list">
+            <div class="fb-item neg"><div class="fb-dot neg">✕</div><div class="fb-text">"The box arrived completely crushed — item was fine but packaging needs serious improvement."</div></div>
+          </div>
         </div>
       </div>
       <div>
         <div class="card" style="margin-bottom:16px;">
-          <div class="card-title" style="margin-bottom:14px;">Top Themes</div>
-          <div class="theme-row"><span class="theme-name">Packaging Quality</span><span class="theme-cnt">341</span></div>
-          <div class="theme-row"><span class="theme-name">Delivery Speed</span><span class="theme-cnt">289</span></div>
-          <div class="theme-row"><span class="theme-name">Product Quality</span><span class="theme-cnt">256</span></div>
-          <div class="theme-row"><span class="theme-name">Customer Support</span><span class="theme-cnt">198</span></div>
-          <div class="theme-row"><span class="theme-name">Pricing & Value</span><span class="theme-cnt">121</span></div>
-          <div class="theme-row"><span class="theme-name">Return Process</span><span class="theme-cnt">79</span></div>
+          <div class="card-title" style="margin-bottom:14px;">AI Recommendations</div>
+          <div id="recommendation-list">
+            <div class="fb-item"><div class="fb-dot">→</div><div class="fb-text">Focus on packaging standards and support escalation processes.</div></div>
+          </div>
         </div>
         <div class="card" style="margin-bottom:16px;">
           <div class="card-title" style="margin-bottom:16px;">Sentiment by Category</div>

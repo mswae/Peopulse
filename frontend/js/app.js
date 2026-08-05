@@ -43,34 +43,93 @@ function rmFile() {
   document.getElementById('fi').value = '';
 }
 
-/* ── Analysis simulation ── */
-function runAnalysis() {
+/* ── Real backend analysis ── */
+function updateProgress(stepIndex, label, pctValue) {
   const pw = document.getElementById('prog-wrap');
   const pf = document.getElementById('prog-fill');
   const pl = document.getElementById('prog-lbl');
   const pp = document.getElementById('prog-pct');
+  const sids = ['st1', 'st2', 'st3', 'st4', 'st5'];
+
   pw.style.display = 'block';
+  pf.style.width = pctValue + '%';
+  pp.textContent = pctValue + '%';
+  pl.textContent = label;
+
+  sids.forEach((id, idx) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.classList.toggle('done', idx < stepIndex);
+    }
+  });
+}
+
+function renderAnalysisResult(result) {
+  const analysis = result && result.analysis ? result.analysis : {};
+  const filename = result && result.filename ? result.filename : 'uploaded_file.csv';
+  const rows = result && typeof result.rows_detected !== 'undefined' ? result.rows_detected : 0;
+
+  const topPraises = Array.isArray(analysis.top_praises) ? analysis.top_praises : [];
+  const topComplaints = Array.isArray(analysis.top_complaints) ? analysis.top_complaints : [];
+  const recommendations = Array.isArray(analysis.actionable_recommendations) ? analysis.actionable_recommendations : [];
+
+  document.getElementById('output-eyebrow').textContent = `Analysis Complete · ${filename}`;
+  document.getElementById('output-sub').textContent = `${rows} feedback entries analyzed`;
+  document.getElementById('summary-text').textContent = recommendations.length
+    ? recommendations.join(' ')
+    : 'The AI analysis completed successfully. Review the generated themes and recommendations below.';
+
+  const praiseWrap = document.getElementById('positive-list');
+  const complaintWrap = document.getElementById('negative-list');
+  const recommendationWrap = document.getElementById('recommendation-list');
+
+  praiseWrap.innerHTML = topPraises.length
+    ? topPraises.map((item) => `
+        <div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">${item}</div></div>
+      `).join('')
+    : '<div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">No praise items were returned by the model.</div></div>';
+
+  complaintWrap.innerHTML = topComplaints.length
+    ? topComplaints.map((item) => `
+        <div class="fb-item neg"><div class="fb-dot neg">✕</div><div class="fb-text">${item}</div></div>
+      `).join('')
+    : '<div class="fb-item neg"><div class="fb-dot neg">✕</div><div class="fb-text">No complaint items were returned by the model.</div></div>';
+
+  recommendationWrap.innerHTML = recommendations.length
+    ? recommendations.map((item) => `
+        <div class="fb-item"><div class="fb-dot">→</div><div class="fb-text">${item}</div></div>
+      `).join('')
+    : '<div class="fb-item"><div class="fb-dot">→</div><div class="fb-text">No recommendations were returned by the model.</div></div>';
+}
+
+async function runAnalysis() {
+  if (!selectedFile) {
+    toast('Please select a CSV file first');
+    return;
+  }
+
   const steps = [
     'Validating file…',
     'Parsing columns…',
-    'Running sentiment model…',
+    'Running AI analysis…',
     'Extracting themes…',
     'Generating summary…',
   ];
-  const sids = ['st1', 'st2', 'st3', 'st4', 'st5'];
-  let i = 0;
-  const iv = setInterval(() => {
-    const pct = Math.round(((i + 1) / 5) * 100);
-    pf.style.width = pct + '%';
-    pp.textContent = pct + '%';
-    pl.textContent = steps[i] || 'Complete!';
-    if (sids[i]) document.getElementById(sids[i]).classList.add('done');
-    i++;
-    if (i >= 5) {
-      clearInterval(iv);
-      setTimeout(() => goto('output'), 500);
-    }
-  }, 700);
+
+  steps.forEach((label, idx) => {
+    updateProgress(idx + 1, label, Math.round(((idx + 1) / steps.length) * 100));
+  });
+
+  try {
+    const result = await window.API.uploadCsv(selectedFile);
+    renderAnalysisResult(result);
+    updateProgress(steps.length, 'Complete!', 100);
+    setTimeout(() => goto('output'), 500);
+  } catch (err) {
+    console.error(err);
+    updateProgress(0, 'Analysis failed', 0);
+    toast(err.message || 'Analysis failed');
+  }
 }
 
 /* ── Recent analyses tabs ── */
