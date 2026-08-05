@@ -10,6 +10,43 @@ import pandas as pd
 from services.data_pipeline import get_feedback_column, merge_feedback_columns
 from services.llm_analytics import analyze_feedback
 
+
+def normalize_analysis_payload(payload):
+    """Normalize model output so the frontend always gets the same shape."""
+    if not isinstance(payload, dict):
+        return {
+            "top_praises": [],
+            "top_complaints": [],
+            "actionable_recommendations": []
+        }
+
+    normalized = {
+        "top_praises": [],
+        "top_complaints": [],
+        "actionable_recommendations": []
+    }
+
+    aliases = {
+        "top_praises": ["top_praises", "positive_feedback", "praises"],
+        "top_complaints": ["top_complaints", "negative_feedback", "complaints"],
+        "actionable_recommendations": ["actionable_recommendations", "recommendations", "actionable_recommendation"]
+    }
+
+    for canonical_key, possible_names in aliases.items():
+        for name in possible_names:
+            if name in payload and payload[name] is not None:
+                value = payload[name]
+                if isinstance(value, str):
+                    normalized[canonical_key] = [value]
+                elif isinstance(value, list):
+                    normalized[canonical_key] = value
+                else:
+                    normalized[canonical_key] = [str(value)]
+                break
+
+    return normalized
+
+
 # initialize app
 app = FastAPI(
     title="Feedback Column Identifier API",
@@ -94,13 +131,16 @@ async def upload_csv(file: UploadFile = File(...)):
             else:
                 # If it's a different error (like a bad API key), fail immediately
                 raise HTTPException(status_code=502, detail=error_message)
-        
+
+        analysis_source = final_results_dict.get("analysis", final_results_dict)
+        normalized_analysis = normalize_analysis_payload(analysis_source)
+
         return {
             "status": "success",
             "filename": file.filename,
             "rows_detected": len(df),
-            "analysis": final_results_dict
-        }            
+            "analysis": normalized_analysis
+        }
     
     raise HTTPException(
         status_code=503, 

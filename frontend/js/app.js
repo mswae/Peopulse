@@ -65,13 +65,18 @@ function updateProgress(stepIndex, label, pctValue) {
 }
 
 function renderAnalysisResult(result) {
-  const analysis = result && result.analysis ? result.analysis : {};
+  const payload = result && result.analysis ? result.analysis : result || {};
+  const analysis = payload && payload.analysis ? payload.analysis : payload;
   const filename = result && result.filename ? result.filename : 'uploaded_file.csv';
   const rows = result && typeof result.rows_detected !== 'undefined' ? result.rows_detected : 0;
 
   const topPraises = Array.isArray(analysis.top_praises) ? analysis.top_praises : [];
   const topComplaints = Array.isArray(analysis.top_complaints) ? analysis.top_complaints : [];
-  const recommendations = Array.isArray(analysis.actionable_recommendations) ? analysis.actionable_recommendations : [];
+  const recommendations = Array.isArray(analysis.actionable_recommendations)
+    ? analysis.actionable_recommendations
+    : Array.isArray(analysis.recommendations)
+      ? analysis.recommendations
+      : [];
 
   document.getElementById('output-eyebrow').textContent = `Analysis Complete · ${filename}`;
   document.getElementById('output-sub').textContent = `${rows} feedback entries analyzed`;
