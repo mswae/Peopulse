@@ -66,5 +66,9 @@ secrets.json
 # Add any specific files, temporary logs, or testing datasets you want to ignore
 # ==============================================================================
 
+# Local docs & design tooling
+docs/
+.impeccable/
+
 # e.g., my_test_script.py
 # e.g., dummy_lgu_data.csv

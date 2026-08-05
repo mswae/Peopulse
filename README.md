@@ -20,7 +20,7 @@ cd ..
 ./run
 ```
 
-- UI → http://127.0.0.1:3456  
+- UI → http://127.0.0.1:3456 (auto-refreshes on frontend file changes)  
 - API → http://127.0.0.1:8000  
 
 ### Vercel
