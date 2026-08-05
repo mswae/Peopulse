@@ -1,14 +1,15 @@
 """
-This script creates a Gradio interface to test the feedback column identification and merging functionality.
-It allows users to upload a CSV file, identifies potential feedback columns, and then merges them into a single column for display.
+Gradio UI to smoke-test feedback column identification and merging.
 
-HOW TO USE:
-Simply RUN this script, and a Gradio interface will open in your browser. 
-Upload a CSV file, click the "Analyze Button", and the identified feedback column(s) along with the merged feedback DataFrame will be displayed.
+Run from the backend directory:
+  cd backend && python -m tests.gradio_demo
+
+Or:
+  cd backend && python tests/gradio_demo.py
 """
 
 import gradio as gr
-from backend.services.data_pipeline import get_feedback_column, merge_feedback_columns
+from services.data_pipeline import get_feedback_column, merge_feedback_columns
 
 with gr.Blocks() as demo:
     gr.Markdown("## Feedback Column Identifier")
@@ -26,12 +27,13 @@ with gr.Blocks() as demo:
 
     analyze_button.click(
         fn=get_feedback_column,
-        inputs=csv_input, 
-        outputs=[columns_output]
+        inputs=csv_input,
+        outputs=[columns_output],
     ).then(
         fn=merge_feedback_columns,
         inputs=[csv_input, columns_output],
-        outputs=[df_output]
+        outputs=[df_output],
     )
 
-demo.launch()
+if __name__ == "__main__":
+    demo.launch()

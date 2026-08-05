@@ -1,5 +1,6 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/hifi.html" }
+    { "source": "/", "destination": "/frontend/index.html" },
+    { "source": "/((?!backend/).*)", "destination": "/frontend/$1" }
   ]
 }
