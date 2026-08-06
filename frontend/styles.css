@@ -221,7 +221,7 @@ body[data-view="output"] nav{display:flex;}
 
 .intro-title{
   font-size:clamp(2rem, 3.4vw, 3.15rem);
-  font-weight:800;letter-spacing:-0.038em;
+  font-weight:800;letter-spacing:-0.02em;
   color:var(--navy);text-wrap:balance;
   line-height:1.08;margin-bottom:16px;
 }
@@ -505,7 +505,7 @@ body[data-view="output"] .sheet{
 }
 .page-title{
   font-size:clamp(1.75rem, 2.4vw, 2.2rem);
-  font-weight:800;letter-spacing:-0.03em;
+  font-weight:800;letter-spacing:-0.015em;
   color:var(--navy);text-wrap:balance;
   line-height:1.14;margin-bottom:8px;
 }
@@ -579,7 +579,7 @@ body[data-view="output"] .sheet{
 .q-head-text{min-width:0;flex:1;}
 .q-title{
   font-size:1rem;font-weight:800;color:var(--navy);
-  margin-bottom:8px;letter-spacing:-0.01em;
+  margin-bottom:8px;letter-spacing:0;
   text-wrap:balance;
   transition:color 0.18s var(--ease);
 }
