@@ -17,7 +17,6 @@
   --radius:16px;
   --radius-card:16px;
   --frame-gap:5px;
-  --nav-h:68px;
   --shell-max:80rem;
   --gutter:clamp(16px,2.8vw,28px);
   --ease:cubic-bezier(0.16,1,0.3,1);
@@ -42,34 +41,6 @@ body{
 }
 
 #app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;}
-
-/* NAV — results only; upload carries brand inside the card */
-nav{
-  position:static;
-  height:var(--nav-h);
-  display:none;
-  align-items:center;
-  flex-shrink:0;
-  background:transparent;
-  border-bottom:none;
-}
-body[data-view="output"] nav{display:flex;}
-
-.nav-inner{
-  width:min(var(--shell-max),100%);
-  margin:0 auto;
-  padding:0 var(--gutter);
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-}
-.nav-logo{
-  display:inline-flex;align-items:center;gap:10px;
-  color:#fff;font-size:1.1rem;font-weight:800;letter-spacing:-0.03em;
-  cursor:pointer;user-select:none;border-radius:8px;
-}
-.nav-logo:focus-visible{outline:2px solid #9ec5ff;outline-offset:4px;}
-.nav-logo .brand-badge{
-  box-shadow:0 0 0 1px rgba(255,255,255,0.18);
-}
 
 .brand-badge{
   flex-shrink:0;display:block;

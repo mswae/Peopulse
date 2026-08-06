@@ -3,7 +3,6 @@
  * Requires a local/static server (file:// fetch is blocked by browsers).
  */
 const COMPONENTS = [
-  { file: 'nav.html', target: '#app-nav' },
   { file: 'upload.html', target: '#app-pages' },
   { file: 'output.html', target: '#app-pages' },
   { file: 'toast.html', target: '#app-toast' },
