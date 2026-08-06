@@ -95,17 +95,28 @@ window.addEventListener('popstate', (e) => {
 });
 
 /* ── Toast ── */
-function toast(msg) {
+const TOAST_ICONS = {
+  success:
+    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  error:
+    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+};
+
+function toast(msg, type = 'error') {
   const el = document.getElementById('toastEl');
   const msgEl = document.getElementById('toastMsg');
-  
-  // CRITICAL FIX: Prevent silent crashes if toast elements are missing
+  const iconEl = document.getElementById('toastIcon');
+
   if (!el || !msgEl) {
-    console.error("Toast Error:", msg);
-    alert(msg); 
+    console.error('Toast Error:', msg);
+    alert(msg);
     return;
   }
-  
+
+  const kind = type === 'success' ? 'success' : 'error';
+  el.dataset.type = kind;
+  el.setAttribute('role', kind === 'error' ? 'alert' : 'status');
+  if (iconEl) iconEl.innerHTML = TOAST_ICONS[kind];
   msgEl.textContent = msg;
   el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 3000);

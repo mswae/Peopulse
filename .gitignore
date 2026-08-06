@@ -20,7 +20,6 @@ __pycache__/
 venv/
 .venv/
 env/
-/backend/venv/
 
 # Pytest & Coverage
 .pytest_cache/
@@ -28,17 +27,21 @@ env/
 htmlcov/
 
 # ==============================================================================
-# Frontend (React / Vue / Node.js)
+# Frontend (Next.js / Node.js)
 # ==============================================================================
 # Dependencies
 node_modules/
-/frontend/node_modules/
 
 # Production builds
 dist/
 build/
-/frontend/build/
-/frontend/dist/
+
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+.vercel
 
 # ==============================================================================
 # Security & Secrets (CRITICAL)
