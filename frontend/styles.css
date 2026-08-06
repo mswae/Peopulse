@@ -9,6 +9,10 @@
   --sky:#1E6FD9;
   --sky-text:#175FC4;
   --sky-soft:#EAF2FC;
+  --positive-bg:#F0FDF4;
+  --positive-ink:#16A34A;
+  --negative-bg:#FFF5F5;
+  --negative-ink:#EF4444;
   --ink:#0A1638;
   --ink-muted:#48597A;
   --line:#DCE6F5;
@@ -422,6 +426,10 @@ body{
   background:rgba(255,255,255,0.42);
   color:rgba(7,21,63,0.55);
 }
+.sheet-form .btn-primary.is-loading:disabled{
+  background:var(--navy);
+  color:#fff;
+}
 .sheet-form .btn-primary:focus-visible{outline-color:#fff;}
 
 .btn-ghost{
@@ -446,21 +454,50 @@ body{
   background:var(--sky-soft);
 }
 
-.prog-wrap{
-  margin-top:18px;
-  visibility:hidden;
-  opacity:0;
-  pointer-events:none;
+.btn-primary.is-loading{
+  cursor:wait;
 }
-.prog-wrap.is-visible{
-  visibility:visible;
+.btn-run-label{
+  display:inline-flex;
+  align-items:baseline;
+  justify-content:center;
+  gap:0;
+  min-height:1.25em;
+}
+.btn-run-status{
+  display:inline-flex;
+  align-items:baseline;
+  justify-content:center;
   opacity:1;
+  transition:opacity 0.4s ease-in-out;
 }
-.prog-label-row{display:flex;justify-content:space-between;margin-bottom:8px;}
-.prog-label{font-size:0.8125rem;color:rgba(255,255,255,0.82);}
-.prog-pct{font-size:0.8125rem;font-weight:700;color:#fff;}
-.prog-track{background:rgba(255,255,255,0.28);border-radius:100px;height:6px;overflow:hidden;}
-.prog-fill{height:100%;border-radius:100px;background:#fff;transition:width 0.35s var(--ease);}
+.btn-run-status.is-fading{
+  opacity:0;
+}
+.btn-run-msg{
+  display:inline-block;
+}
+.loading-dots{
+  display:inline-flex;
+  width:1.2em;
+  margin-left:1px;
+  justify-content:flex-start;
+  letter-spacing:0.02em;
+}
+.loading-dots span{
+  opacity:0.2;
+  animation:loading-dot 1.4s ease-in-out infinite;
+}
+.loading-dots span:nth-child(2){animation-delay:0.18s;}
+.loading-dots span:nth-child(3){animation-delay:0.36s;}
+@keyframes loading-dot{
+  0%, 80%, 100%{opacity:0.2;}
+  40%{opacity:1;}
+}
+@media (prefers-reduced-motion:reduce){
+  .loading-dots span{animation:none;opacity:1;}
+  .btn-run-status{transition:none;}
+}
 
 /* ── RESULTS (page-output) ── */
 .sheet-output{padding:clamp(32px,4vw,48px);}
@@ -485,6 +522,16 @@ body[data-view="output"] .sheet{
   color:var(--ink-muted);
   text-wrap:pretty;
   max-width:52ch;
+}
+#output-meta{
+  display:flex;flex-direction:column;gap:2px;
+  max-width:none;
+}
+.output-meta-file,
+.output-meta-count{white-space:nowrap;}
+.output-meta-file{
+  min-width:0;max-width:100%;
+  overflow:hidden;text-overflow:ellipsis;
 }
 
 .section-label{
@@ -624,28 +671,42 @@ body[data-view="output"] .sheet{
   flex-direction:column;
   gap:8px;
 }
-.q-points li{
+.q-points li.q-point{
   display:flex;
   align-items:flex-start;
   gap:10px;
   margin:0;
-  padding:0;
+  padding:10px 12px;
+  border:none;
+  border-radius:10px;
   font-size:0.9375rem;line-height:1.55;
-  color:var(--ink);
   text-wrap:pretty;
 }
-.q-points li::before{
-  content:'';
+.q-point--positive{
+  background:var(--positive-bg);
+  color:var(--ink);
+}
+.q-point--negative{
+  background:var(--negative-bg);
+  color:var(--ink);
+}
+.q-point--empty{
+  background:var(--surface-sunken);
+  color:var(--ink-muted);
+}
+.q-point-badge{
   flex:0 0 auto;
-  width:7px;height:7px;
-  margin-top:0.55em;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:20px;height:20px;
+  margin-top:2px;
   border-radius:50%;
-  background:var(--sky);
+  color:#fff;
 }
-.q-points--aside li::before{
-  background:var(--ink-muted);
-  opacity:0.55;
-}
+.q-point--positive .q-point-badge{background:var(--positive-ink);}
+.q-point--negative .q-point-badge{background:var(--negative-ink);}
+.q-point-icon{display:block;width:12px;height:12px;}
 .q-points li .q-point-text::before{content:'\201C';}
 .q-points li .q-point-text::after{content:'\201D';}
 
@@ -653,6 +714,21 @@ body[data-view="output"] .sheet{
   .q-detail-panel,
   .q-detail-panel__inner,
   .q-chevron{transition:none;}
+}
+
+.output-footer{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-top:12px;
+  padding:14px 20px;
+  background:var(--surface);
+  border-radius:var(--radius);
+  color:var(--navy);
+  font-size:1rem;
+  font-weight:800;
+  letter-spacing:-0.03em;
 }
 
 .toast{

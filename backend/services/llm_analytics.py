@@ -12,17 +12,25 @@ client = OpenAI(
     api_key=os.environ.get("OPENROUTER_API_KEY")
 )
 
-def analyze_feedback(feedback_df) -> str:
+def analyze_feedback(feedback_by_question: dict) -> str:
     """
-    Analyzes the feedback data using a large language model (LLM) to extract insights and trends.
+    Analyzes the feedback data using a large language model (LLM) to extract a
+    per-question summary (summary, heard often, also worth noting) plus overall
+    top themes.
+
+    Parameters:
+    feedback_by_question: { question_text: [list of response strings] }
     """
-    
+
     # ======================================================
     # 1. Prepare the feedback data for LLM analysis
     # ======================================================
-    
-    feedback_entries = feedback_df["Merged Feedback"].tolist()
-    feedback_string = " | ".join(feedback_entries)
+
+    sections = []
+    for question, responses in feedback_by_question.items():
+        joined_responses = " | ".join(responses)
+        sections.append(f"Question: {question}\nResponses: {joined_responses}")
+    feedback_string = "\n\n".join(sections)
     
     # ======================================================
     # 2. Locate the prompt file
@@ -47,13 +55,22 @@ def analyze_feedback(feedback_df) -> str:
     # ======================================================
 
     try:
+        # Speed pick for MVP demos: ling-3.0-flash (free) — noticeably faster
+        # on OpenRouter's free queue than Gemma / gpt-oss in our testing.
+        # Keep max_tokens high; ling previously truncated mid-JSON at 1500.
+        # Note: ling has no response_format / structured_outputs — rely on the
+        # prompt + regex JSON extractor in main.py.
+        #
+        # Prefer for free-tier accuracy (esp. Tagalog/Taglish + themes):
+        #   model="google/gemma-4-26b-a4b-it:free"
+        #   + response_format={"type": "json_object"}
         response = client.chat.completions.create(
-            model="inclusionai/ling-3.0-flash:free", 
-            max_tokens=1000,
+            model="inclusionai/ling-3.0-flash:free",
+            max_tokens=4096,
             temperature=0.3,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"Here is the raw citizen feedback:\n\n{feedback_string}"}
+                {"role": "user", "content": f"Here is the raw citizen feedback, grouped by question:\n\n{feedback_string}"}
             ]
         )
 

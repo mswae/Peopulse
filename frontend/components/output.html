@@ -5,123 +5,35 @@
         <header class="page-head--row">
           <div>
             <h1 class="page-title">Here&rsquo;s your summary.</h1>
+            <p class="page-sub" id="output-meta"></p>
           </div>
           <button type="button" class="btn-ghost btn-ghost--outline" onclick="goto('upload')">New file</button>
         </header>
 
         <section class="takeaway" aria-labelledby="themes-heading">
           <h2 id="themes-heading" class="section-label">What people said the most</h2>
-          <ul class="theme-list">
-            <li>People felt welcomed. They liked the registration table and the friendly hosts.</li>
-            <li>Some talks ran long. People want shorter breaks between talks.</li>
-            <li>Food and the room were fine. People wanted more time to talk with each other.</li>
-          </ul>
+          <ul class="theme-list" id="theme-list"></ul>
         </section>
 
         <section class="questions-panel" aria-labelledby="questions-heading">
           <h2 id="questions-heading" class="section-label">By question</h2>
-          <div class="questions">
-            <article class="q-item is-open">
-              <button type="button" class="q-head" aria-expanded="true" aria-controls="q-body-1" id="q-head-1">
-                <div class="q-head-text">
-                  <h3 class="q-title">How was the event?</h3>
-                  <p class="q-summary">Most people said it felt welcoming and well run. Check-in was smooth and staff were friendly. A few said the afternoon felt too packed and wanted more breaks.</p>
-                </div>
-                <span class="q-chevron" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-                </span>
-              </button>
-              <div class="q-detail-panel" id="q-body-1" role="region" aria-labelledby="q-head-1" aria-hidden="false">
-                <div class="q-detail-panel__inner">
-                  <div class="q-detail">
-                    <div class="q-group">
-                      <p class="q-group-label">Heard often</p>
-                      <ul class="q-points">
-                        <li><span class="q-point-text">Smooth check-in and a welcoming registration table</span></li>
-                        <li><span class="q-point-text">Friendly hosts and staff throughout the day</span></li>
-                        <li><span class="q-point-text">Afternoon schedule felt too packed; not enough breaks</span></li>
-                      </ul>
-                    </div>
-                    <div class="q-group">
-                      <p class="q-group-label">Also worth noting</p>
-                      <ul class="q-points q-points--aside">
-                        <li><span class="q-point-text">One person said the side entrance was hard to find</span></li>
-                        <li><span class="q-point-text">A couple asked for a quiet room during lunch</span></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </article>
-
-            <article class="q-item is-open">
-              <button type="button" class="q-head" aria-expanded="true" aria-controls="q-body-2" id="q-head-2">
-                <div class="q-head-text">
-                  <h3 class="q-title">What is your feedback?</h3>
-                  <p class="q-summary">People want talks to start and end on time, better sound in the side room, and slides shared earlier. Many would come back if there is still time to talk with others.</p>
-                </div>
-                <span class="q-chevron" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-                </span>
-              </button>
-              <div class="q-detail-panel" id="q-body-2" role="region" aria-labelledby="q-head-2" aria-hidden="false">
-                <div class="q-detail-panel__inner">
-                  <div class="q-detail">
-                    <div class="q-group">
-                      <p class="q-group-label">Heard often</p>
-                      <ul class="q-points">
-                        <li><span class="q-point-text">Talks starting and ending late</span></li>
-                        <li><span class="q-point-text">Weak sound in the side room</span></li>
-                        <li><span class="q-point-text">Slides not shared early enough</span></li>
-                        <li><span class="q-point-text">Willingness to return if networking time stays</span></li>
-                      </ul>
-                    </div>
-                    <div class="q-group">
-                      <p class="q-group-label">Also worth noting</p>
-                      <ul class="q-points q-points--aside">
-                        <li><span class="q-point-text">One person asked for Tagalog captions on the livestream</span></li>
-                        <li><span class="q-point-text">Someone suggested a short FAQ before the first talk</span></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </article>
-
-            <article class="q-item is-open">
-              <button type="button" class="q-head" aria-expanded="true" aria-controls="q-body-3" id="q-head-3">
-                <div class="q-head-text">
-                  <h3 class="q-title">What was the best thing that happened?</h3>
-                  <p class="q-summary">Open Q&amp;A and hallway chats after the talks. People said these gave them real ideas and new friends. They liked this more than the talks themselves.</p>
-                </div>
-                <span class="q-chevron" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-                </span>
-              </button>
-              <div class="q-detail-panel" id="q-body-3" role="region" aria-labelledby="q-head-3" aria-hidden="false">
-                <div class="q-detail-panel__inner">
-                  <div class="q-detail">
-                    <div class="q-group">
-                      <p class="q-group-label">Heard often</p>
-                      <ul class="q-points">
-                        <li><span class="q-point-text">Open Q&amp;A that sparked real ideas</span></li>
-                        <li><span class="q-point-text">Hallway chats that led to new connections</span></li>
-                        <li><span class="q-point-text">Informal time valued above the formal talks</span></li>
-                      </ul>
-                    </div>
-                    <div class="q-group">
-                      <p class="q-group-label">Also worth noting</p>
-                      <ul class="q-points q-points--aside">
-                        <li><span class="q-point-text">One person highlighted a chance conversation with a speaker in the lobby</span></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </article>
-          </div>
+          <div class="questions" id="questions-list"></div>
         </section>
       </div>
     </div>
+
+    <footer class="output-footer" aria-label="Peopulse">
+      <span class="brand-badge" aria-hidden="true">
+        <img
+          class="brand-badge-img"
+          src="assets/peopulse-mark.png"
+          alt=""
+          width="32"
+          height="32"
+          decoding="async"
+        />
+      </span>
+      Peopulse
+    </footer>
   </div>
 </div>

@@ -57,6 +57,42 @@ def get_feedback_column(df) -> list:
 
     return feedback_cols
 
+def build_feedback_by_question(orig_df, feedback_cols) -> dict:
+    """
+    Groups responses by question (one identified feedback column = one question),
+    instead of flattening everything into a single blob. This preserves the
+    per-question structure the frontend renders (summary, heard often, also
+    worth noting for EACH question).
+
+    Parameters:
+    orig_df: The original DataFrame containing the identified feedback columns.
+    feedback_cols: List of identified feedback column names.
+
+    Returns:
+    dict: { question_column_name: [list of non-empty response strings] }
+    """
+
+    if isinstance(feedback_cols, str):
+        feedback_cols = ast.literal_eval(feedback_cols)
+
+    if not feedback_cols:
+        raise ValueError("No feedback columns identified to analyze.")
+
+    blank_values = {"", "n/a", "na", "none", "nil"}
+    by_question = {}
+
+    for col in feedback_cols:
+        responses = orig_df[col].dropna().astype(str).str.strip()
+        responses = [r for r in responses if r.lower() not in blank_values]
+        if responses:
+            by_question[str(col)] = responses
+
+    if not by_question:
+        raise ValueError("Feedback columns were found, but all responses were empty.")
+
+    return by_question
+
+
 def merge_feedback_columns(orig_df, feedback_cols) -> pd.DataFrame:
     """
     Merges multiple identified feedback columns into a single column.

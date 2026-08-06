@@ -1,3 +1,40 @@
+/* ── Persist last analysis for refresh / back (session only) ── */
+const ANALYSIS_STORAGE_KEY = 'peopulse:lastAnalysis';
+
+function saveAnalysisResult(result) {
+  try {
+    sessionStorage.setItem(ANALYSIS_STORAGE_KEY, JSON.stringify(result));
+  } catch (err) {
+    console.warn('Could not save analysis to sessionStorage:', err);
+  }
+}
+
+function loadAnalysisResult() {
+  try {
+    const raw = sessionStorage.getItem(ANALYSIS_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : null;
+  } catch (err) {
+    console.warn('Could not load analysis from sessionStorage:', err);
+    return null;
+  }
+}
+
+function outputHasRenderedResult() {
+  const list = document.getElementById('questions-list');
+  return !!(list && list.childElementCount > 0);
+}
+
+/** Rehydrate output from sessionStorage. Returns false if nothing to show. */
+function restoreAnalysisResult() {
+  if (outputHasRenderedResult()) return true;
+  const stored = loadAnalysisResult();
+  if (!stored) return false;
+  renderAnalysisResult(stored);
+  return true;
+}
+
 /* ── Navigation (History API so Back restores the upload view) ── */
 function pageFromUrl() {
   const view = new URL(window.location.href).searchParams.get('view');
@@ -23,6 +60,10 @@ function showPage(p) {
 
 /** @param {'push'|'replace'|'none'} [historyMode] */
 function goto(p, historyMode = 'push') {
+  if (p === 'output' && !restoreAnalysisResult() && !outputHasRenderedResult()) {
+    p = 'upload';
+    historyMode = historyMode === 'none' ? 'none' : 'replace';
+  }
   showPage(p);
   if (historyMode === 'none') return;
   const url = pageUrl(p);
@@ -32,13 +73,24 @@ function goto(p, historyMode = 'push') {
 }
 
 function initRouting() {
-  const page = pageFromUrl();
+  let page = pageFromUrl();
+  if (page === 'output' && !restoreAnalysisResult()) {
+    page = 'upload';
+  }
   showPage(page);
   history.replaceState({ page }, '', pageUrl(page));
+  if (USE_SAMPLE_ANALYSIS) {
+    const runBtn = document.getElementById('btn-run');
+    if (runBtn) runBtn.disabled = false;
+  }
 }
 
 window.addEventListener('popstate', (e) => {
-  const page = e.state?.page || pageFromUrl();
+  let page = e.state?.page || pageFromUrl();
+  if (page === 'output' && !restoreAnalysisResult()) {
+    page = 'upload';
+    history.replaceState({ page }, '', pageUrl(page));
+  }
   showPage(page);
 });
 
@@ -64,6 +116,9 @@ let selectedFile = null;
 const ALLOWED_EXT = ['csv', 'xlsx', 'xls'];
 const MAX_BYTES = 50 * 1024 * 1024;
 let pageDragDepth = 0;
+
+/* Flip to false when wiring the real LLM response again. */
+const USE_SAMPLE_ANALYSIS = false;
 
 function isUploadPageActive() {
   const page = document.getElementById('page-upload');
@@ -161,110 +216,219 @@ function rmFile() {
   dz.removeAttribute('aria-hidden');
   dz.tabIndex = 0;
   document.getElementById('fi').value = '';
-  document.getElementById('btn-run').disabled = true;
-  const pw = document.getElementById('prog-wrap');
-  if (pw) {
-    pw.classList.remove('is-visible');
-    pw.setAttribute('aria-hidden', 'true');
-    document.getElementById('prog-fill').style.width = '0%';
-  }
+  document.getElementById('btn-run').disabled = !USE_SAMPLE_ANALYSIS;
+  stopLoadingStatus();
 }
 
-/* ── Real backend analysis ── */
-function updateProgress(stepIndex, label, pctValue) {
-  const pw = document.getElementById('prog-wrap');
-  const pf = document.getElementById('prog-fill');
-  const pl = document.getElementById('prog-lbl');
-  const pp = document.getElementById('prog-pct');
-  const sids = ['st1', 'st2', 'st3', 'st4', 'st5'];
+/* ── Loading status (cycling messages + animated dots on the button) ── */
+const LOADING_MESSAGES = [
+  'Parsing your files',
+  'Summarizing your responses',
+  'Separating the questions',
+  'Finding the big themes',
+  'Pulling out what people said',
+  'Almost there',
+];
+const RUN_BTN_DEFAULT_LABEL = 'Summarize responses';
+const LOADING_DOTS_HTML =
+  '<span class="loading-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span>';
 
-  pw.style.display = 'block';
-  pf.style.width = pctValue + '%';
-  pp.textContent = pctValue + '%';
-  pl.textContent = label;
+let loadingTimer = null;
+let loadingIndex = 0;
 
-  sids.forEach((id, idx) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.classList.toggle('done', idx < stepIndex);
-    }
-  });
+function setRunButtonLabel(html) {
+  const label = document.querySelector('#btn-run .btn-run-label');
+  if (label) label.innerHTML = html;
+}
+
+function loadingStatusHtml(message) {
+  return `<span class="btn-run-status"><span class="btn-run-msg">${message}</span>${LOADING_DOTS_HTML}</span>`;
+}
+
+function setLoadingMessage(message) {
+  const statusEl = document.querySelector('#btn-run .btn-run-status');
+  const textEl = document.querySelector('#btn-run .btn-run-msg');
+  if (!statusEl || !textEl) return;
+
+  statusEl.classList.add('is-fading');
+  window.setTimeout(() => {
+    textEl.textContent = message;
+    requestAnimationFrame(() => {
+      statusEl.classList.remove('is-fading');
+    });
+  }, 400);
+}
+
+function showLoadingStatus() {
+  const runBtn = document.getElementById('btn-run');
+  if (!runBtn) return;
+
+  loadingIndex = 0;
+  runBtn.classList.add('is-loading');
+  runBtn.setAttribute('aria-busy', 'true');
+  setRunButtonLabel(loadingStatusHtml(LOADING_MESSAGES[0]));
+
+  if (loadingTimer) clearInterval(loadingTimer);
+  loadingTimer = setInterval(() => {
+    loadingIndex = (loadingIndex + 1) % LOADING_MESSAGES.length;
+    setLoadingMessage(LOADING_MESSAGES[loadingIndex]);
+  }, 3200);
+}
+
+function stopLoadingStatus() {
+  if (loadingTimer) {
+    clearInterval(loadingTimer);
+    loadingTimer = null;
+  }
+  const runBtn = document.getElementById('btn-run');
+  if (runBtn) {
+    runBtn.classList.remove('is-loading');
+    runBtn.removeAttribute('aria-busy');
+  }
+  setRunButtonLabel(RUN_BTN_DEFAULT_LABEL);
+}
+
+function escapeHtml(value) {
+  const div = document.createElement('div');
+  div.textContent = value == null ? '' : String(value);
+  return div.innerHTML;
+}
+
+const ICON_CHECK =
+  '<svg class="q-point-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>';
+const ICON_X =
+  '<svg class="q-point-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+
+function normalizePoint(point) {
+  if (point && typeof point === 'object') {
+    const sentiment = point.sentiment === 'negative' ? 'negative' : 'positive';
+    const text = point.text != null ? String(point.text) : '';
+    return { text, sentiment };
+  }
+  return { text: point == null ? '' : String(point), sentiment: 'positive' };
+}
+
+function renderPointLi(point) {
+  const { text, sentiment } = normalizePoint(point);
+  const isNegative = sentiment === 'negative';
+  const cls = isNegative ? 'q-point q-point--negative' : 'q-point q-point--positive';
+  const icon = isNegative ? ICON_X : ICON_CHECK;
+  const label = isNegative ? 'Negative' : 'Positive';
+  return `<li class="${cls}" data-sentiment="${sentiment}">
+    <span class="q-point-badge" aria-label="${label}">${icon}</span>
+    <span class="q-point-text">${escapeHtml(text)}</span>
+  </li>`;
+}
+
+function buildQuestionItem(q, index) {
+  const headId = `q-head-${index}`;
+  const bodyId = `q-body-${index}`;
+  const isOpen = index === 1;
+  const heardOften = Array.isArray(q.heard_often) ? q.heard_often : [];
+  const alsoWorthNoting = Array.isArray(q.also_worth_noting) ? q.also_worth_noting : [];
+
+  const heardOftenHtml = heardOften.length
+    ? heardOften.map(renderPointLi).join('')
+    : '<li class="q-point q-point--empty"><span class="q-point-text">No recurring points were identified for this question.</span></li>';
+
+  const asideHtml = alsoWorthNoting.length
+    ? `<div class="q-group">
+        <p class="q-group-label">Also worth noting</p>
+        <ul class="q-points q-points--aside">
+          ${alsoWorthNoting.map(renderPointLi).join('')}
+        </ul>
+      </div>`
+    : '';
+
+  const article = document.createElement('article');
+  article.className = isOpen ? 'q-item is-open' : 'q-item';
+  article.innerHTML = `
+    <button type="button" class="q-head" aria-expanded="${isOpen}" aria-controls="${bodyId}" id="${headId}">
+      <div class="q-head-text">
+        <h3 class="q-title">${escapeHtml(q.question)}</h3>
+        <p class="q-summary">${escapeHtml(q.summary)}</p>
+      </div>
+      <span class="q-chevron" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </span>
+    </button>
+    <div class="q-detail-panel" id="${bodyId}" role="region" aria-labelledby="${headId}" aria-hidden="${!isOpen}">
+      <div class="q-detail-panel__inner">
+        <div class="q-detail">
+          <div class="q-group">
+            <p class="q-group-label">Heard often</p>
+            <ul class="q-points">${heardOftenHtml}</ul>
+          </div>
+          ${asideHtml}
+        </div>
+      </div>
+    </div>
+  `;
+  return article;
 }
 
 function renderAnalysisResult(result) {
-  const payload = result && result.analysis ? result.analysis : result || {};
-  const analysis = payload && payload.analysis ? payload.analysis : payload;
-  const filename = result && result.filename ? result.filename : 'uploaded_file.csv';
+  const analysis = (result && result.analysis) || {};
+  const filename = (result && result.filename) || 'your file';
   const rows = result && typeof result.rows_detected !== 'undefined' ? result.rows_detected : 0;
 
-  const topPraises = Array.isArray(analysis.top_praises) ? analysis.top_praises : [];
-  const topComplaints = Array.isArray(analysis.top_complaints) ? analysis.top_complaints : [];
-  const recommendations = Array.isArray(analysis.actionable_recommendations)
-    ? analysis.actionable_recommendations
-    : Array.isArray(analysis.recommendations)
-      ? analysis.recommendations
-      : [];
+  const topThemes = Array.isArray(analysis.top_themes) ? analysis.top_themes : [];
+  const questions = Array.isArray(analysis.questions) ? analysis.questions : [];
 
-  document.getElementById('output-eyebrow').textContent = `Analysis Complete · ${filename}`;
-  document.getElementById('output-sub').textContent = `${rows} feedback entries analyzed`;
-  document.getElementById('summary-text').textContent = recommendations.length
-    ? recommendations.join(' ')
-    : 'The AI analysis completed successfully. Review the generated themes and recommendations below.';
+  const meta = document.getElementById('output-meta');
+  if (meta) {
+    meta.innerHTML = `<span class="output-meta-file">${escapeHtml(filename)}</span><span class="output-meta-count">${rows} feedback ${rows === 1 ? 'entry' : 'entries'} analyzed</span>`;
+  }
 
-  const praiseWrap = document.getElementById('positive-list');
-  const complaintWrap = document.getElementById('negative-list');
-  const recommendationWrap = document.getElementById('recommendation-list');
+  const themeList = document.getElementById('theme-list');
+  if (themeList) {
+    themeList.innerHTML = topThemes.length
+      ? topThemes.map((theme) => `<li>${escapeHtml(theme)}</li>`).join('')
+      : '<li>No overall themes were returned by the model.</li>';
+  }
 
-  praiseWrap.innerHTML = topPraises.length
-    ? topPraises.map((item) => `
-        <div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">${item}</div></div>
-      `).join('')
-    : '<div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">No praise items were returned by the model.</div></div>';
+  const questionsList = document.getElementById('questions-list');
+  if (questionsList) {
+    questionsList.innerHTML = '';
+    if (questions.length) {
+      questions.forEach((q, idx) => questionsList.appendChild(buildQuestionItem(q, idx + 1)));
+    } else {
+      questionsList.innerHTML = '<p class="q-summary">No per-question analysis was returned by the model.</p>';
+    }
+  }
 
-  complaintWrap.innerHTML = topComplaints.length
-    ? topComplaints.map((item) => `
-        <div class="fb-item neg"><div class="fb-dot neg">✕</div><div class="fb-text">${item}</div></div>
-      `).join('')
-    : '<div class="fb-item neg"><div class="fb-dot neg">✕</div><div class="fb-text">No complaint items were returned by the model.</div></div>';
-
-  recommendationWrap.innerHTML = recommendations.length
-    ? recommendations.map((item) => `
-        <div class="fb-item"><div class="fb-dot">→</div><div class="fb-text">${item}</div></div>
-      `).join('')
-    : '<div class="fb-item"><div class="fb-dot">→</div><div class="fb-text">No recommendations were returned by the model.</div></div>';
+  initQuestionDetails();
 }
 
 async function runAnalysis() {
-  if (!selectedFile) {
+  if (!selectedFile && !USE_SAMPLE_ANALYSIS) {
     toast('Please select a CSV file first');
     return;
   }
 
-  const steps = [
-    'Validating file…',
-    'Parsing columns…',
-    'Running AI analysis…',
-    'Extracting themes…',
-    'Generating summary…',
-  ];
+  const runBtn = document.getElementById('btn-run');
+  if (runBtn) runBtn.disabled = true;
 
-  steps.forEach((label, idx) => {
-    updateProgress(idx + 1, label, Math.round(((idx + 1) / steps.length) * 100));
-  });
+  showLoadingStatus();
 
   try {
-    const result = await window.API.uploadCsv(selectedFile);
+    const result = USE_SAMPLE_ANALYSIS
+      ? await window.SampleAnalysis.fetch()
+      : await window.API.uploadCsv(selectedFile);
+    stopLoadingStatus();
+    saveAnalysisResult(result);
     renderAnalysisResult(result);
-    updateProgress(steps.length, 'Complete!', 100);
-    setTimeout(() => goto('output'), 500);
+    goto('output');
   } catch (err) {
     console.error(err);
-    updateProgress(0, 'Analysis failed', 0);
+    stopLoadingStatus();
     toast(err.message || 'Analysis failed');
+  } finally {
+    if (runBtn) runBtn.disabled = !selectedFile && !USE_SAMPLE_ANALYSIS;
   }
 }
 
-/* ── Results: question expand / collapse (open by default) ── */
+/* ── Results: question expand / collapse (first open by default) ── */
 function setQuestionOpen(item, open) {
   const head = item.querySelector('.q-head');
   const panel = item.querySelector('.q-detail-panel');
@@ -291,4 +455,3 @@ window.toast = toast;
 window.onFileSelect = onFileSelect;
 window.rmFile = rmFile;
 window.runAnalysis = runAnalysis;
-window.switchTab = switchTab;

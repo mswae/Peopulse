@@ -64,16 +64,8 @@
               <input id="fi" type="file" accept=".csv,.xlsx,.xls" style="display:none" onchange="onFileSelect(event)"/>
 
               <button type="button" class="btn-primary" id="btn-run" onclick="runAnalysis()" disabled>
-                Summarize responses
+                <span class="btn-run-label">Summarize responses</span>
               </button>
-
-              <div id="prog-wrap" class="prog-wrap" aria-hidden="true">
-                <div class="prog-label-row">
-                  <span class="prog-label" id="prog-lbl">Reading responses&hellip;</span>
-                  <span class="prog-pct" id="prog-pct">0%</span>
-                </div>
-                <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
-              </div>
             </div>
           </section>
         </div>
