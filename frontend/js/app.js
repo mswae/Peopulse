@@ -45,7 +45,16 @@ window.addEventListener('popstate', (e) => {
 /* ── Toast ── */
 function toast(msg) {
   const el = document.getElementById('toastEl');
-  document.getElementById('toastMsg').textContent = msg;
+  const msgEl = document.getElementById('toastMsg');
+  
+  // CRITICAL FIX: Prevent silent crashes if toast elements are missing
+  if (!el || !msgEl) {
+    console.error("Toast Error:", msg);
+    alert(msg); 
+    return;
+  }
+  
+  msgEl.textContent = msg;
   el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 3000);
 }
@@ -161,38 +170,98 @@ function rmFile() {
   }
 }
 
-/* ── Summarize (UI progress; wire to API later) ── */
-function runAnalysis() {
-  if (!selectedFile) {
-    toast('Choose a file first');
-    return;
-  }
-
+/* ── Real backend analysis ── */
+function updateProgress(stepIndex, label, pctValue) {
   const pw = document.getElementById('prog-wrap');
   const pf = document.getElementById('prog-fill');
   const pl = document.getElementById('prog-lbl');
   const pp = document.getElementById('prog-pct');
-  const btn = document.getElementById('btn-run');
-  pw.classList.add('is-visible');
-  pw.setAttribute('aria-hidden', 'false');
-  btn.disabled = true;
+  const sids = ['st1', 'st2', 'st3', 'st4', 'st5'];
 
-  const steps = ['Reading responses…', 'Finding the big ideas…', 'Summarizing each question…'];
-  let i = 0;
-  const iv = setInterval(() => {
-    const pct = Math.round(((i + 1) / steps.length) * 100);
-    pf.style.width = pct + '%';
-    pp.textContent = pct + '%';
-    pl.textContent = steps[i] || 'Done';
-    i++;
-    if (i >= steps.length) {
-      clearInterval(iv);
-      setTimeout(() => {
-        btn.disabled = false;
-        goto('output');
-      }, 320);
+  pw.style.display = 'block';
+  pf.style.width = pctValue + '%';
+  pp.textContent = pctValue + '%';
+  pl.textContent = label;
+
+  sids.forEach((id, idx) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.classList.toggle('done', idx < stepIndex);
     }
-  }, 520);
+  });
+}
+
+function renderAnalysisResult(result) {
+  const payload = result && result.analysis ? result.analysis : result || {};
+  const analysis = payload && payload.analysis ? payload.analysis : payload;
+  const filename = result && result.filename ? result.filename : 'uploaded_file.csv';
+  const rows = result && typeof result.rows_detected !== 'undefined' ? result.rows_detected : 0;
+
+  const topPraises = Array.isArray(analysis.top_praises) ? analysis.top_praises : [];
+  const topComplaints = Array.isArray(analysis.top_complaints) ? analysis.top_complaints : [];
+  const recommendations = Array.isArray(analysis.actionable_recommendations)
+    ? analysis.actionable_recommendations
+    : Array.isArray(analysis.recommendations)
+      ? analysis.recommendations
+      : [];
+
+  document.getElementById('output-eyebrow').textContent = `Analysis Complete · ${filename}`;
+  document.getElementById('output-sub').textContent = `${rows} feedback entries analyzed`;
+  document.getElementById('summary-text').textContent = recommendations.length
+    ? recommendations.join(' ')
+    : 'The AI analysis completed successfully. Review the generated themes and recommendations below.';
+
+  const praiseWrap = document.getElementById('positive-list');
+  const complaintWrap = document.getElementById('negative-list');
+  const recommendationWrap = document.getElementById('recommendation-list');
+
+  praiseWrap.innerHTML = topPraises.length
+    ? topPraises.map((item) => `
+        <div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">${item}</div></div>
+      `).join('')
+    : '<div class="fb-item pos"><div class="fb-dot pos">✓</div><div class="fb-text">No praise items were returned by the model.</div></div>';
+
+  complaintWrap.innerHTML = topComplaints.length
+    ? topComplaints.map((item) => `
+        <div class="fb-item neg"><div class="fb-dot neg">✕</div><div class="fb-text">${item}</div></div>
+      `).join('')
+    : '<div class="fb-item neg"><div class="fb-dot neg">✕</div><div class="fb-text">No complaint items were returned by the model.</div></div>';
+
+  recommendationWrap.innerHTML = recommendations.length
+    ? recommendations.map((item) => `
+        <div class="fb-item"><div class="fb-dot">→</div><div class="fb-text">${item}</div></div>
+      `).join('')
+    : '<div class="fb-item"><div class="fb-dot">→</div><div class="fb-text">No recommendations were returned by the model.</div></div>';
+}
+
+async function runAnalysis() {
+  if (!selectedFile) {
+    toast('Please select a CSV file first');
+    return;
+  }
+
+  const steps = [
+    'Validating file…',
+    'Parsing columns…',
+    'Running AI analysis…',
+    'Extracting themes…',
+    'Generating summary…',
+  ];
+
+  steps.forEach((label, idx) => {
+    updateProgress(idx + 1, label, Math.round(((idx + 1) / steps.length) * 100));
+  });
+
+  try {
+    const result = await window.API.uploadCsv(selectedFile);
+    renderAnalysisResult(result);
+    updateProgress(steps.length, 'Complete!', 100);
+    setTimeout(() => goto('output'), 500);
+  } catch (err) {
+    console.error(err);
+    updateProgress(0, 'Analysis failed', 0);
+    toast(err.message || 'Analysis failed');
+  }
 }
 
 /* ── Results: question expand / collapse (open by default) ── */
@@ -222,3 +291,4 @@ window.toast = toast;
 window.onFileSelect = onFileSelect;
 window.rmFile = rmFile;
 window.runAnalysis = runAnalysis;
+window.switchTab = switchTab;

@@ -12,23 +12,17 @@ client = OpenAI(
     api_key=os.environ.get("OPENROUTER_API_KEY")
 )
 
-def analyze_feedback(feedback_df) -> dict:
+def analyze_feedback(feedback_df) -> str:
     """
     Analyzes the feedback data using a large language model (LLM) to extract insights and trends.
-    
-    Parameters:
-    feedback_df: DataFrame containing the merged feedback data.
-    
-    Returns:
-    dict: A dictionary containing the analysis results, such as common themes, sentiment analysis, and actionable insights.
     """
     
     # ======================================================
     # 1. Prepare the feedback data for LLM analysis
     # ======================================================
     
-    feedback_entries = feedback_df["Merged Feedback"].tolist() # Convert the feedback DataFrame to a list of feedback entries
-    feedback_string = " | ".join(feedback_entries) # convert the list to a large string for the LLM input
+    feedback_entries = feedback_df["Merged Feedback"].tolist()
+    feedback_string = " | ".join(feedback_entries)
     
     # ======================================================
     # 2. Locate the prompt file
@@ -45,16 +39,16 @@ def analyze_feedback(feedback_df) -> dict:
         with open(prompt_file_path, "r", encoding="utf-8") as file:
             system_prompt = file.read()
     except FileNotFoundError:
-        return Exception(f"Prompt file not found at path: {prompt_file_path}")
+        # CRITICAL FIX: Raise the exception so it doesn't get passed to the regex parser
+        raise FileNotFoundError(f"Prompt file not found at path: {prompt_file_path}")
     
     # ======================================================
     # 4. API call to the LLM
     # ======================================================
 
     try:
-        
         response = client.chat.completions.create(
-            model="openrouter/owl-alpha",
+            model="inclusionai/ling-3.0-flash:free", 
             max_tokens=1000,
             temperature=0.3,
             messages=[
@@ -64,31 +58,7 @@ def analyze_feedback(feedback_df) -> dict:
         )
 
         return response.choices[0].message.content
-        
-        """
-        # Return a hardcoded string that perfectly matches your expected JSON schema
-        # Uncomment this once you have the actual LLM integration working, to test the rest of your pipeline without making real API calls
-        mock_claude_response = """
-        {
-            "top_praises": [
-                "The new digital queuing system is helpful", 
-                "Front desk staff were highly accommodating"
-            ],
-            "top_complaints": [
-                "Ventilation in the main hall is very poor", 
-                "Waiting times for document processing exceed 2 hours"
-            ],
-            "actionable_recommendations": [
-                "Deploy portable industrial fans in the main waiting area",
-                "Open a dedicated 'Express Lane' for simple document pickups to reduce bottleneck"
-            ]
-        }
-        """
-
-        return mock_claude_response
-        """
 
     except Exception as e:
         error_dict = {"error": f"(llm_analytics.py) API connection failed: {str(e)}"}
-
         return json.dumps(error_dict)
