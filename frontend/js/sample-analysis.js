@@ -9,9 +9,9 @@ const SAMPLE_ANALYSIS = {
   rows_detected: 48,
   analysis: {
     top_themes: [
-      'Residents want faster response times on barangay service requests.',
-      'Many praise recent cleanliness and drainage improvements.',
-      'Communication about schedule changes remains a recurring pain point.',
+      { text: 'Residents want faster response times on barangay service requests.', sentiment: 'negative' },
+      { text: 'Many praise recent cleanliness and drainage improvements.', sentiment: 'positive' },
+      { text: 'Communication about schedule changes remains a recurring pain point.', sentiment: 'negative' },
     ],
     questions: [
       {

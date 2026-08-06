@@ -547,15 +547,9 @@ body[data-view="output"] .sheet{
   padding:24px 26px;
   margin-bottom:28px;
 }
-.theme-list{list-style:none;display:flex;flex-direction:column;gap:14px;}
-.theme-list li{
-  position:relative;padding-left:20px;
-  font-size:1.0625rem;font-weight:600;line-height:1.55;
-  color:var(--ink);text-wrap:pretty;
-}
-.theme-list li::before{
-  content:'';position:absolute;left:0;top:0.55em;
-  width:8px;height:8px;border-radius:50%;background:var(--sky);
+.theme-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.theme-list .q-point{
+  font-size:1.0625rem;font-weight:600;
 }
 
 /* By question — each question is one continuous card (expanded by default) */
@@ -671,7 +665,7 @@ body[data-view="output"] .sheet{
   flex-direction:column;
   gap:8px;
 }
-.q-points li.q-point{
+.q-point{
   display:flex;
   align-items:flex-start;
   gap:10px;

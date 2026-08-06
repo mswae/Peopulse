@@ -13,13 +13,16 @@ You will receive citizen feedback grouped by survey question. For EACH question,
 6. Keep each question's "summary" to 1-3 sentences. Keep each bullet point in "heard_often" and "also_worth_noting" to a single short sentence.
 7. Use the exact question text given to you as the "question" field. Do not rewrite, rename, or translate it.
 8. If a question has no notable outlier points, return an empty list for "also_worth_noting" rather than inventing one.
-9. For every item in "heard_often" and "also_worth_noting", set "sentiment" to either "positive" (praise, appreciation, improvement) or "negative" (complaint, problem, request for fix). No other values.
-10. Every point must be an object with both "text" and "sentiment".
+9. For every item in "top_themes", "heard_often", and "also_worth_noting", set "sentiment" to either "positive" (praise, appreciation, improvement) or "negative" (complaint, problem, request for fix). No other values.
+10. Every point and theme must be an object with both "text" and "sentiment".
 11. CRITICAL: Output ONLY valid JSON. No markdown formatting blocks, no greetings, no explanations outside the JSON.
 
 # Output Requirements
 {
-  "top_themes": ["2-3 short sentences capturing the biggest themes across ALL questions"],
+  "top_themes": [
+    { "text": "short sentence capturing a big theme across ALL questions", "sentiment": "positive" },
+    { "text": "short sentence capturing a big theme across ALL questions", "sentiment": "negative" }
+  ],
   "questions": [
     {
       "question": "<the exact question text provided>",

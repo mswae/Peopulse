@@ -59,7 +59,7 @@ def normalize_analysis_payload(payload):
     if not isinstance(payload, dict):
         return {"top_themes": [], "questions": []}
 
-    top_themes = _as_str_list(payload.get("top_themes"))
+    top_themes = _as_point_list(payload.get("top_themes"))
 
     raw_questions = payload.get("questions")
     if not isinstance(raw_questions, list):

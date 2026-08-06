@@ -383,8 +383,8 @@ function renderAnalysisResult(result) {
   const themeList = document.getElementById('theme-list');
   if (themeList) {
     themeList.innerHTML = topThemes.length
-      ? topThemes.map((theme) => `<li>${escapeHtml(theme)}</li>`).join('')
-      : '<li>No overall themes were returned by the model.</li>';
+      ? topThemes.map(renderPointLi).join('')
+      : '<li class="q-point q-point--empty"><span class="q-point-text">No overall themes were returned by the model.</span></li>';
   }
 
   const questionsList = document.getElementById('questions-list');
